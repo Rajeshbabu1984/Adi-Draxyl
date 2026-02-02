@@ -251,7 +251,7 @@
                     return;
                 }
                 
-                const response = await fetch('https://gdllgvlk-5000.inc1.devtunnels.ms/api/admin/delete-user', {
+                const response = await fetch('/api/admin/delete-user', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -316,7 +316,7 @@
                     'Authorization': `Bearer ${token}`
                 };
                 
-                const response = await fetch('https://gdllgvlk-5000.inc1.devtunnels.ms/api/users', {
+                const response = await fetch('/api/users', {
                     method: 'GET',
                     headers: headers
                 });

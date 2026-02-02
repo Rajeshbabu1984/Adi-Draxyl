@@ -26,6 +26,7 @@ CORS(app, resources={
             "https://gdllgvlk-8000.inc1.devtunnels.ms",
             "https://gdllgvlk-5000.inc1.devtunnels.ms",
             "https://gdllgvlk-5001.inc1.devtunnels.ms",
+            "https://adi-draxyl.onrender.com",
             "null"
         ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
