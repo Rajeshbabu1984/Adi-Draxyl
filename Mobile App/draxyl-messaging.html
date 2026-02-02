@@ -1122,8 +1122,11 @@
         let isScreenSharing = false;
         let incomingCallData = null;
 
-        const API_URL = window.location.origin + '/api';
-        const SOCKET_URL = window.location.origin;
+        // Determine if we're running locally or on Render
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const MESSAGING_SERVER = isLocal ? 'http://localhost:5001' : 'https://adi-draxyl-messaging.onrender.com';
+        const API_URL = MESSAGING_SERVER + '/api';
+        const SOCKET_URL = MESSAGING_SERVER;
 
         // ==================== MODAL FUNCTIONS (Early Definition) ====================
         function closeModal(modalId) {
