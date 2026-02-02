@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' wss: ws: https://*.onrender.com https://gdllgvlk-5000.inc1.devtunnels.ms https://gdllgvlk-5001.inc1.devtunnels.ms https://cdn.socket.io">
     <title>Draxyl - Team Collaboration</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
@@ -1121,12 +1122,8 @@
         let isScreenSharing = false;
         let incomingCallData = null;
 
-        const API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:5001/api' 
-            : 'https://gdllgvlk-5001.inc1.devtunnels.ms/api';
-        const SOCKET_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:5001'
-            : 'https://gdllgvlk-5001.inc1.devtunnels.ms';
+        const API_URL = window.location.origin + '/api';
+        const SOCKET_URL = window.location.origin;
 
         // ==================== MODAL FUNCTIONS (Early Definition) ====================
         function closeModal(modalId) {
