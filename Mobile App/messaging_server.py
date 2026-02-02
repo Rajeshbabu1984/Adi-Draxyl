@@ -9,6 +9,7 @@ from datetime import datetime
 import hashlib
 import jwt
 import re
+import os
 from functools import wraps
 
 app = Flask(__name__)
@@ -21,6 +22,8 @@ ALLOWED_ORIGINS = [
     "https://gdllgvlk-5001.inc1.devtunnels.ms",
     "http://localhost:5001",
     "http://127.0.0.1:5001",
+    "https://adi-draxyl.onrender.com",
+    "https://adi-draxyl-messaging.onrender.com",
     "*"  # Allow all origins for development
 ]
 CORS(app, resources={
@@ -1240,7 +1243,8 @@ if __name__ == '__main__':
     print("=" * 60)
     try:
         print("🔄 Starting SocketIO server...")
-        socketio.run(app, host='0.0.0.0', port=5001, debug=True, use_reloader=False, log_output=True)
+        port = int(os.environ.get('PORT', 5001))
+        socketio.run(app, host='0.0.0.0', port=port, debug=False, use_reloader=False, log_output=True)
         print("✅ Server started successfully")
     except KeyboardInterrupt:
         print("\n🛑 Server stopped by user")
