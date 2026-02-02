@@ -78,6 +78,15 @@ blocked_ips = set()
 DATABASE = 'messaging.db'
 USERS_DB = 'users.db'
 
+# ==================== HEALTH CHECK ====================
+@app.route('/')
+def health_check():
+    return jsonify({
+        'status': 'ok',
+        'service': 'Draxyl Messaging Server',
+        'version': '2.0'
+    }), 200
+
 # ==================== SECURITY FUNCTIONS ====================
 def sanitize_input(text):
     """Sanitize user input to prevent XSS and injection attacks"""
