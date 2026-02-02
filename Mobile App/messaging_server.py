@@ -1244,7 +1244,7 @@ if __name__ == '__main__':
     try:
         print("🔄 Starting SocketIO server...")
         port = int(os.environ.get('PORT', 5001))
-        socketio.run(app, host='0.0.0.0', port=port, debug=False, use_reloader=False, log_output=True)
+        socketio.run(app, host='0.0.0.0', port=port, debug=False, use_reloader=False, log_output=True, allow_unsafe_werkzeug=True)
         print("✅ Server started successfully")
     except KeyboardInterrupt:
         print("\n🛑 Server stopped by user")
@@ -1252,4 +1252,3 @@ if __name__ == '__main__':
         print(f"❌ ERROR STARTING SERVER: {e}")
         import traceback
         traceback.print_exc()
-        input("Press Enter to exit...")
