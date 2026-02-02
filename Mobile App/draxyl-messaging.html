@@ -1,0 +1,2629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draxyl - Team Collaboration</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: #111;
+            color: #fff;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            padding: 15px;
+            gap: 15px;
+            background: #111;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: #181818;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .workspace-header {
+            padding: 25px;
+            background: #111;
+            border-radius: 20px 20px 0 0;
+            color: #fff;
+        }
+
+        .security-badge {
+            display: inline-block;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .workspace-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .user-info {
+            font-size: 14px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: #222;
+            border-radius: 12px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #111;
+            box-shadow: 0 0 10px #fff;
+        }
+
+        .channels-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 15px;
+        }
+
+        .section-title {
+            padding: 12px 15px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .section-title:hover {
+            color: #fff;
+        }
+
+        .channel-list {
+            list-style: none;
+        }
+
+        .channel-item {
+            padding: 12px 15px;
+            margin: 5px 0;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .channel-item:hover {
+            background: #222;
+            transform: translateX(5px);
+        }
+
+        .channel-item.active {
+            background: #fff;
+            color: #111;
+            box-shadow: 0 5px 15px #000;
+            font-weight: 600;
+        }
+
+        .channel-hash {
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #181818;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        .channel-header {
+            height: 80px;
+            background: #111;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #222;
+        }
+
+        .channel-info h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .channel-description {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: #181818;
+        }
+
+        .message {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .message:hover {
+            box-shadow: 0 5px 20px #222;
+            transform: translateY(-2px);
+        }
+
+        .message-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px #111;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .message-author {
+            font-weight: 700;
+            font-size: 16px;
+            color: #111;
+        }
+
+        .message-time {
+            font-size: 13px;
+            color: #bbb;
+        }
+
+        .message-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #222;
+        }
+
+        .message-actions {
+            display: none;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .message:hover .message-actions {
+            display: flex;
+        }
+
+        .delete-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #222;
+            transform: scale(1.05);
+        }
+
+        .channel-delete-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: auto;
+            display: none;
+        }
+
+        .channel-item:hover .channel-delete-btn {
+            display: inline-block;
+        }
+
+        /* Input Area */
+        .message-input-area {
+            padding: 10px 30px 10px 30px;
+            background: #181818;
+            border-top: 2px solid #222;
+            margin-bottom: 30px;
+        }
+
+        .message-input-container {
+            background: #fff;
+            border: 2px solid #bbb;
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .message-input-container:focus-within {
+            border-color: #222;
+            box-shadow: 0 8px 24px #222;
+            transform: translateY(-2px);
+        }
+
+        #messageInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            resize: none;
+            max-height: 150px;
+            font-family: inherit;
+            color: #222;
+        }
+
+        .send-button {
+            background: #222;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px #111;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px #222;
+        }
+
+        .send-button:disabled {
+            background: #bbb;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            padding: 15px 30px;
+            font-size: 14px;
+            color: #bbb;
+            font-style: italic;
+            height: 45px;
+            background: #181818;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 300px;
+            background: #181818;
+            border-radius: 20px;
+            padding: 25px;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-list {
+            list-style: none;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .user-item:hover {
+            background: #eee;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px #222;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 12px #111;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .user-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #bbb;
+            margin-left: auto;
+            border: 2px solid #fff;
+            box-shadow: none;
+        }
+
+        .user-status.away {
+            background: #888;
+            box-shadow: none;
+        }
+
+        .user-status.offline {
+            background: #444;
+            box-shadow: none;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: #181818;
+            border-radius: 20px;
+        }
+
+        .welcome-screen h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px #222;
+        }
+
+        .welcome-screen p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            color: #bbb;
+        }
+
+        .create-workspace-btn {
+            background: #222;
+            color: #fff;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px #111;
+        }
+
+        .create-workspace-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px #222;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 40px;
+            border-radius: 24px;
+            width: 550px;
+            max-width: 90%;
+            box-shadow: 0 20px 60px #111;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 30px;
+            color: #111;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #222;
+            font-size: 15px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #bbb;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #222;
+            box-shadow: 0 4px 12px #222;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #222;
+            color: #fff;
+            box-shadow: 0 4px 12px #111;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px #222;
+        }
+
+        .btn-secondary {
+            background: #bbb;
+            color: #222;
+        }
+
+        .btn-secondary:hover {
+            background: #888;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #111;
+        }
+
+        .add-channel-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .add-channel-btn:hover {
+            transform: scale(1.2);
+            color: #bbb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #bbb;
+            font-size: 16px;
+        } 
+
+        /* Video Call Styles */
+        .video-call-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .video-call-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .video-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .video-container.active {
+            display: flex;
+        }
+
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1400px;
+            margin-bottom: 20px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            background: #1f2937;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+            border: 3px solid #10b981;
+        }
+
+        .video-wrapper video:not([srcObject]) {
+            background: #1f2937;
+            border: 3px solid #ef4444;
+        }
+        
+        .video-wrapper .video-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        .debug-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-family: monospace;
+            max-width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10001;
+        }
+        
+        .debug-overlay div {
+            margin: 2px 0;
+        }
+
+        .video-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .call-controls {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(31, 41, 55, 0.9);
+            border-radius: 15px;
+        }
+
+        .call-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 22px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .call-btn.mute {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .call-btn.mute.active {
+            background: #ef4444;
+        }
+
+        .call-btn.video {
+            background: #10b981;
+            color: white;
+        }
+
+        .call-btn.video.off {
+            background: #ef4444;
+        }
+
+        .call-btn.screen {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .call-btn.screen.active {
+            background: #6366f1;
+        }
+
+        .call-btn.hangup {
+            background: #ef4444;
+            color: white;
+        }
+
+        .incoming-call-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000000;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 10001;
+            text-align: center;
+        }
+
+        .incoming-call-modal.active {
+            display: block;
+        }
+
+        .incoming-call-modal h3 {
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+
+        .incoming-call-modal p {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .incoming-call-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .incoming-call-btns button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .accept-call {
+            background: #10b981;
+            color: white;
+        }
+
+        .decline-call {
+            background: #ef4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+        <div style="text-align: center;">
+            <div style="width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.3); border-top: 5px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 30px;"></div>
+            <h2 style="font-size: 28px; margin: 0 0 10px 0;">💬 Draxyl</h2>
+            <p style="font-size: 16px; margin: 0; opacity: 0.9;">Connecting to messaging server...</p>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    
+    <!-- Socket.IO Diagnostic Panel (Hidden) -->
+    <div id="socketDiagnostics" style="display: none;">
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 10px; color: cyan;">📡 SOCKET.IO STATUS</div>
+        <div style="margin: 5px 0;">Status: <span id="socketStatusText" style="color: yellow; font-weight: bold;">LOADING...</span></div>
+        <div style="margin: 5px 0;">SID: <span id="socketSID" style="color: white; font-size: 11px;">-</span></div>
+        <div style="margin: 5px 0;">Channel: <span id="socketChannel" style="color: white;">None</span></div>
+        <div style="margin: 5px 0; border-top: 1px solid #444; padding-top: 5px;">Last Event:</div>
+        <div id="socketLastEvent" style="color: #FFFFFF; font-size: 11px; margin-left: 10px;">-</div>
+        <button onclick="testSocketConnection()" style="margin-top: 10px; background: lime; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 5px; font-weight: bold; width: 100%;">TEST CONNECTION</button>
+        <button onclick="forceRefreshChannel()" style="margin-top: 5px; background: cyan; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 5px; font-weight: bold; width: 100%;">REJOIN CHANNEL</button>
+    </div>
+    
+    <!-- Top Navigation Bar -->
+    <div class="top-bar" style="width: 100vw; background: #000; color: #fff; height: 60px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; z-index: 100; box-shadow: 0 2px 8px #000;">
+        <div style="font-size: 22px; font-weight: bold; margin-left: 30px; letter-spacing: 2px;">Draxyl</div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <input id="channelSearchInput" type="text" placeholder="Search channels..." style="background: #181818; color: #fff; border: 1px solid #333; border-radius: 8px; padding: 8px 14px; font-size: 15px; outline: none;" oninput="searchChannels()">
+            <button id="viewChannelsBtn" onclick="showAllChannels()" style="background: #fff; color: #FFFFFF; border: none; border-radius: 8px; padding: 8px 18px; font-weight: 700; font-size: 15px; cursor: pointer;">View Channels</button>
+            <span id="currentUserTopBar" style="margin-right: 30px; font-size: 15px; color: #bbb;"></span>
+        </div>
+    </div>
+    <div style="height: 60px;"></div> <!-- Spacer for fixed top bar -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="workspace-header">
+                <div class="workspace-name" id="workspaceName">Draxyl Workspace</div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="showInvitePeopleModal()" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                        👥 Invite People
+                    </button>
+                    <button onclick="showJoinByCodeModal()" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+                        🔑 Join by Code
+                    </button>
+                </div>
+                <div class="security-badge" title="Your data is protected with military-grade bcrypt encryption. Even if hackers steal the database, passwords require ~500 years to crack.">
+                    🛡️ ULTRA-SECURE: Database Steal-Proof
+                </div>
+                <div class="user-info">
+                    <span class="status-indicator"></span>
+                    <span id="currentUserName">User</span>
+                </div>
+            </div>
+
+            <div class="channels-section">
+                <div class="section-title">
+                    <span>Channels</span>
+                    <div>
+                        <button class="add-channel-btn" onclick="showBrowseChannelsModal()" title="Browse Channels">🔍</button>
+                        <button class="add-channel-btn" onclick="showCreateChannelModal()">+</button>
+                    </div>
+                </div>
+                <ul class="channel-list" id="channelList">
+                    <li class="channel-item" onclick="selectChannel(1, 'general')">
+                        <span class="channel-hash">●</span>
+                        <span>general</span>
+                    </li>
+                </ul>
+
+                <div class="section-title">
+                    <span>Direct Messages</span>
+                    <button class="add-channel-btn">+</button>
+                </div>
+                <ul class="channel-list" id="dmList">
+                    <!-- DMs will be populated here -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="welcome-screen" id="welcomeScreen">
+                <h1>👋 Welcome to Draxyl!</h1>
+                <p>Create a workspace to start collaborating with your team</p>
+                <button class="create-workspace-btn" onclick="showCreateWorkspaceModal()">Create Workspace</button>
+                <button class="create-workspace-btn" onclick="showJoinWorkspaceModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin-left: 10px;">Join by Code</button>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar" id="rightSidebar" style="display: none;">
+            <div class="sidebar-section">
+                <h3>Members (<span id="memberCount">0</span>)</h3>
+                <ul class="user-list" id="userList">
+                    <!-- Users will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Workspace Modal -->
+    <div class="modal" id="createWorkspaceModal">
+        <div class="modal-content">
+            <h2>Create Workspace</h2>
+            <div class="form-group">
+                <label>Workspace Name</label>
+                <input type="text" id="workspaceNameInput" placeholder="e.g., My Company">
+            </div>
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea id="workspaceDescInput" rows="3" placeholder="What's this workspace for?"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('createWorkspaceModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createWorkspace()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Channel Modal -->
+    <div class="modal" id="createChannelModal">
+        <div class="modal-content">
+            <h2>Create Channel</h2>
+            <div class="form-group">
+                <label>Channel Name</label>
+                <input type="text" id="channelNameInput" placeholder="e.g., marketing">
+            </div>
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea id="channelDescInput" rows="3" placeholder="What's this channel about?"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('createChannelModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createChannel()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invite People Modal -->
+    <div class="modal" id="invitePeopleModal">
+        <div class="modal-content">
+            <h2>🎉 Invite People to Workspace</h2>
+            <p style="color: #FFFFFF; margin-bottom: 20px;">Share this code with people to let them join</p>
+            
+            <div id="inviteCodeDisplay" style="display: none;">
+                <div style="background: #1f2937; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 2px solid #3b82f6;">
+                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #ffffff; margin-bottom: 10px;" id="inviteCode">
+                        LOADING...
+                    </div>
+                    <p style="color: #9ca3af; font-size: 14px;">Invite Code</p>
+                </div>
+                
+                <div style="background: #1f2937; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #374151;">
+                    <p style="margin: 0; font-size: 14px; color: #ffffff;">
+                        📋 <strong>Share this code:</strong><br>
+                        People can use the "Join by Code" button to join your workspace
+                    </p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="copyInviteCode()" style="width: 100%; margin-bottom: 10px;">
+                    📋 Copy Code
+                </button>
+            </div>
+            
+            <div id="inviteLoading" style="text-align: center; padding: 40px;">
+                <div class="loading">Generating invite code...</div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('invitePeopleModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Workspace Modal -->
+    <div class="modal" id="joinWorkspaceModal">
+        <div class="modal-content">
+            <h2>Join Workspace</h2>
+            <p style="color: #FFFFFF; margin-bottom: 20px;">Enter an invite code to join a workspace</p>
+            <div class="form-group">
+                <label>Invite Code</label>
+                <input type="text" id="joinCodeInput" placeholder="e.g., ABC12345" style="text-transform: uppercase; letter-spacing: 2px; font-size: 18px; text-align: center;">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('joinWorkspaceModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="joinWorkspaceByCode()">Join</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Browse Channels Modal -->
+    <div class="modal" id="browseChannelsModal">
+        <div class="modal-content">
+            <h2>Browse Channels</h2>
+            <p style="color: #FFFFFF; margin-bottom: 20px;">Join channels to start collaborating</p>
+            <div id="availableChannelsList" style="max-height: 400px; overflow-y: auto;">
+                <div class="loading">Loading channels...</div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('browseChannelsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="allChannelsModal">
+        <div class="modal-content" style="background: #181818; color: #fff;">
+            <h2 style="color: #fff;">All Channels</h2>
+            <div id="allChannelsList" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('allChannelsModal')">Close</button>
+            </div>
+        </div>
+    </div>
+    <script src="security.js"></script>
+    <script>
+        // ==================== GLOBAL STATE ====================
+                // Show all channels modal
+                async function showAllChannels() {
+                    if (!currentWorkspace) return;
+                    document.getElementById('allChannelsModal').classList.add('active');
+                    const listDiv = document.getElementById('allChannelsList');
+                    listDiv.innerHTML = '<div class="loading">Loading channels...</div>';
+                    try {
+                        const response = await fetch(`${API_URL}/channels?workspace_id=${currentWorkspace.id}&user_id=${currentUser.id}`);
+                        const data = await response.json();
+                        if (data.success && data.channels.length > 0) {
+                            listDiv.innerHTML = '';
+                            data.channels.forEach(channel => {
+                                const div = document.createElement('div');
+                                div.style.cssText = 'padding: 15px; margin-bottom: 10px; background: #222; border-radius: 12px; color: #fff;';
+                                div.innerHTML = `<strong>#${channel.name}</strong><br><span style=\"color:#bbb; font-size:13px;\">${channel.description || ''}</span>`;
+                                listDiv.appendChild(div);
+                            });
+                        } else {
+                            listDiv.innerHTML = '<div class="loading">No channels found</div>';
+                        }
+                    } catch (e) {
+                        listDiv.innerHTML = '<div class="loading">Error loading channels</div>';
+                    }
+                }
+
+                // Channel search filter
+                function searchChannels() {
+                    const input = document.getElementById('channelSearchInput');
+                    const filter = input.value.toLowerCase();
+                    document.querySelectorAll('.channel-item').forEach(item => {
+                        const name = item.textContent.toLowerCase();
+                        item.style.display = name.includes(filter) ? '' : 'none';
+                    });
+                }
+        let socket;
+        let currentUser = null;
+        let currentWorkspace = null;
+        let currentChannel = null;
+        let typingTimeout = null;
+
+        // WebRTC state
+        let peerConnection = null;
+        let localStream = null;
+        let remoteStream = null;
+        let isCallActive = false;
+        let isMuted = false;
+        let isVideoOff = false;
+        let isScreenSharing = false;
+        let incomingCallData = null;
+
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:5001/api' 
+            : 'https://gdllgvlk-5001.inc1.devtunnels.ms/api';
+        const SOCKET_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:5001'
+            : 'https://gdllgvlk-5001.inc1.devtunnels.ms';
+
+        // ==================== MODAL FUNCTIONS (Early Definition) ====================
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showCreateWorkspaceModal() {
+            document.getElementById('createWorkspaceModal').classList.add('active');
+        }
+
+        function showCreateChannelModal() {
+            document.getElementById('createChannelModal').classList.add('active');
+        }
+
+        function showJoinWorkspaceModal() {
+            document.getElementById('joinWorkspaceModal').classList.add('active');
+            document.getElementById('joinCodeInput').value = '';
+        }
+
+        function showJoinByCodeModal() {
+            document.getElementById('joinWorkspaceModal').classList.add('active');
+            document.getElementById('joinCodeInput').value = '';
+            document.getElementById('joinCodeInput').focus();
+        }
+
+        function showBrowseChannelsModal() {
+            document.getElementById('browseChannelsModal').classList.add('active');
+        }
+
+        // Placeholder functions for onclick handlers that are defined later
+        let createWorkspace = async () => {};
+        let createChannel = async () => {};
+        let showInvitePeopleModal = async () => {};
+        let sendMessage = async () => {};
+        let deleteMessage = async () => {};
+        let handleKeyPress = () => {};
+        let handleTyping = () => {};
+        let selectChannel = () => {};
+        let copyInviteCode = () => {};
+        let joinWorkspaceByCode = async () => {};
+        let deleteChannel = async () => {};
+        let testSocketConnection = () => {};
+        let forceRefreshChannel = () => {};
+        let loadBrowseChannels = async () => {};
+        let generateInviteCode = async () => {};
+
+        // WebRTC Configuration - Enhanced with multiple TURN servers for global connectivity
+        const rtcConfig = {
+            iceServers: [
+                // Google STUN servers
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:stun3.l.google.com:19302' },
+                { urls: 'stun:stun4.l.google.com:19302' },
+                
+                // Metered TURN (Free tier - 50GB/month) - Multiple protocols
+                {
+                    urls: 'turn:openrelay.metered.ca:80',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                },
+                {
+                    urls: 'turn:openrelay.metered.ca:443',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                },
+                {
+                    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                },
+                {
+                    urls: 'turns:openrelay.metered.ca:443?transport=tcp',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                },
+                
+                // Twilio STUN (reliable global)
+                { urls: 'stun:global.stun.twilio.com:3478' },
+                
+                // Additional free STUN servers
+                { urls: 'stun:stun.relay.metered.ca:80' }
+            ],
+            iceCandidatePoolSize: 10,
+            bundlePolicy: 'max-bundle',
+            rtcpMuxPolicy: 'require',
+            iceTransportPolicy: 'all' // Try all candidates including relay (TURN)
+        }
+
+        // Initialize
+        window.onload = async function() {
+            // Check if user is logged in
+            const userStr = localStorage.getItem('draxylUser');
+            if (!userStr) {
+                console.error('No user found in localStorage');
+                alert('Please login first! Redirecting to login page...');
+                // Use relative path for devtunnel compatibility
+                window.location.href = window.location.origin.includes('devtunnels') 
+                    ? 'https://gdllgvlk-8000.inc1.devtunnels.ms/login.html'
+                    : 'login.html';
+                return;
+            }
+
+            try {
+                currentUser = JSON.parse(userStr);
+                console.log('Current user loaded:', currentUser);
+                if (!currentUser || !currentUser.id || !currentUser.name) {
+                    alert('Invalid user session. Please login again.');
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                    return;
+                }
+                document.getElementById('currentUserName').textContent = currentUser.name;
+
+            // Set user name in top bar
+            document.getElementById('currentUserTopBar').textContent = currentUser.name;
+
+            // Connect to Socket.IO with polling transport (works better with dev tunnels)
+            socket = io(SOCKET_URL, {
+                transports: ['polling', 'websocket'], // Try polling first, then upgrade to websocket
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionAttempts: 5,
+                timeout: 10000
+            });
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                
+                // Hide loading screen
+                document.getElementById('loadingScreen').style.display = 'none';
+                
+                // Update diagnostic panel
+                document.getElementById('socketStatusText').textContent = 'CONNECTED ✅';
+                document.getElementById('socketStatusText').style.color = 'lime';
+                document.getElementById('socketSID').textContent = socket.id || 'unknown';
+                document.getElementById('socketLastEvent').textContent = 'connect @ ' + new Date().toLocaleTimeString();
+                document.getElementById('socketLastEvent').style.color = 'lime';
+                
+                if (currentUser) {
+                    socket.emit('user_status', { user_id: currentUser.id, status: 'online' });
+                }
+            });
+
+            socket.on('connect_error', (error) => {
+                console.error('Connection error:', error);
+                document.getElementById('socketStatusText').textContent = 'ERROR ❌';
+                document.getElementById('socketStatusText').style.color = 'red';
+            });
+
+            socket.on('disconnect', (reason) => {
+                console.log('Disconnected:', reason);
+                document.getElementById('socketStatusText').textContent = 'DISCONNECTED ⚠️';
+                document.getElementById('socketStatusText').style.color = 'orange';
+            });
+
+            socket.on('new_message', (message) => {
+                if (currentChannel && message.channel_id === currentChannel.id) {
+                    addMessageToUI(message);
+                }
+            });
+
+            socket.on('user_typing', (data) => {
+                showTypingIndicator(data.user_name, data.is_typing);
+            });
+
+            socket.on('user_joined', (data) => {
+                console.log('User joined:', data.user_id);
+                if (currentWorkspace && currentWorkspace.id) {
+                    loadOnlineUsers();
+                }
+            });
+                
+            socket.on('user_left', (data) => {
+                console.log('User left:', data.user_id);
+                if (currentWorkspace && currentWorkspace.id) {
+                    loadOnlineUsers();
+                }
+            });
+
+            socket.on('status_changed', (data) => {
+                console.log('User status changed:', data.user_id, data.status);
+                if (currentWorkspace && currentWorkspace.id) {
+                    loadOnlineUsers();
+                }
+            });
+
+            // Video call events
+            socket.on('incoming_call', (data) => {
+                document.getElementById('socketLastEvent').textContent = '🔔 INCOMING_CALL from ' + data.caller_name + ' @ ' + new Date().toLocaleTimeString();
+                document.getElementById('socketLastEvent').style.color = 'cyan';
+                
+                if (data.caller_id !== currentUser.id) {
+                    incomingCallData = data;
+                    document.getElementById('callerName').textContent = data.caller_name;
+                    document.getElementById('incomingCallModal').classList.add('active');
+                }
+            });
+
+            socket.on('call_answered', async (data) => {
+                document.getElementById('socketLastEvent').textContent = 'call_answered @ ' + new Date().toLocaleTimeString();
+                document.getElementById('socketLastEvent').style.color = 'cyan';
+                
+                if (data.caller_id === currentUser.id && peerConnection) {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+                    document.getElementById('remoteUserLabel').textContent = 'Connected';
+                }
+            });
+
+            socket.on('ice_candidate_received', async (data) => {
+                console.log('🧊 ICE candidate received from user', data.sender_id);
+                console.log('   Full data:', JSON.stringify(data, null, 2));
+                console.log('   Candidate object:', data.candidate);
+                
+                const candidateType = data.candidate?.type || data.candidate?.candidate?.match(/typ (\w+)/)?.[1] || 'unknown';
+                updateDebugOverlay(`IN: ${candidateType} from user ${data.sender_id}`);
+                
+                if (peerConnection && data.sender_id !== currentUser.id) {
+                    try {
+                        if (data.candidate && peerConnection.remoteDescription) {
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+                            console.log('✅ ICE candidate added successfully');
+                            updateDebugOverlay('✅ Candidate added');
+                        } else if (!peerConnection.remoteDescription) {
+                            console.warn('⚠️ No remote description yet, queueing candidate');
+                            updateDebugOverlay('⚠️ Waiting for offer');
+                        }
+                    } catch (error) {
+                        console.error('❌ Error adding ICE candidate:', error);
+                        updateDebugOverlay('❌ Add failed: ' + error.message);
+                    }
+                } else {
+                    console.log('⏭️ Skipping own ICE candidate or no peer connection');
+                }
+            });
+
+            socket.on('call_ended', (data) => {
+                document.getElementById('socketLastEvent').textContent = 'call_ended @ ' + new Date().toLocaleTimeString();
+                document.getElementById('socketLastEvent').style.color = 'orange';
+                
+                if (isCallActive && data.user_id !== currentUser.id) {
+                    alert('Call ended by other user');
+                    hangup();
+                }
+            });
+
+            socket.on('call_declined', (data) => {
+                if (data.caller_id === currentUser.id) {
+                    alert('Call declined');
+                    hangup();
+                }
+            });
+
+            socket.on('message_deleted', (data) => {
+                // Remove the message from the UI
+                const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
+                if (messageElement) {
+                    messageElement.remove();
+                }
+            });
+
+            socket.on('channel_deleted', (data) => {
+                // Remove the channel from the UI
+                const channelElement = document.querySelector(`[data-channel-id="${data.channel_id}"]`);
+                if (channelElement) {
+                    channelElement.remove();
+                }
+                
+                // If currently viewing this channel, clear the view
+                if (currentChannel && currentChannel.id === data.channel_id) {
+                    const messagesContainer = document.getElementById('messagesContainer');
+                    if (messagesContainer) {
+                        messagesContainer.innerHTML = '<div class="loading">Channel deleted</div>';
+                    }
+                    currentChannel = null;
+                }
+            });
+
+            // Load workspace or show welcome
+            loadWorkspace().catch(err => {
+                console.error('Failed to load workspace:', err);
+                document.getElementById('loadingScreen').style.display = 'none';
+            });
+
+// End of window.onload
+
+async function loadWorkspace() {
+    try {
+        const response = await fetch(`${API_URL}/workspaces?user_id=${currentUser.id}`, {
+            signal: AbortSignal.timeout(15000) // 15 second timeout (increased)
+        });
+        const data = await response.json();
+
+        if (data.success && data.workspaces.length > 0) {
+            currentWorkspace = data.workspaces[0];
+            document.getElementById('workspaceName').textContent = currentWorkspace.name;
+            document.getElementById('welcomeScreen').style.display = 'none';
+            await loadChannels();
+        }
+        document.getElementById('loadingScreen').style.display = 'none';
+    } catch (error) {
+        console.error('Error loading workspace:', error);
+        document.getElementById('loadingScreen').style.display = 'none';
+        // Don't show alert on refresh, just log the error
+        if (error.name !== 'AbortError') {
+            console.warn('Could not load workspace data. Socket.IO connection may still work.');
+        }
+    }
+}
+
+        async function loadChannels() {
+            const channelList = document.getElementById('channelList');
+            channelList.innerHTML = '';
+            if (!currentWorkspace) {
+                channelList.innerHTML = '<li style="color: red; padding: 15px;">No workspace loaded. Please select or create a workspace first.</li>';
+                return;
+            }
+            try {
+                const response = await fetch(`${API_URL}/channels?workspace_id=${currentWorkspace.id}&user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const isOwner = currentWorkspace.created_by === currentUser.id;
+                    data.channels.forEach(channel => {
+                        const li = document.createElement('li');
+                        li.className = 'channel-item';
+                        li.dataset.channelId = channel.id;
+                        li.setAttribute('data-channel-id', channel.id);
+                        const deleteBtn = isOwner ? `<button class="channel-delete-btn" onclick="event.stopPropagation(); deleteChannel(${channel.id})">×</button>` : '';
+                        li.innerHTML = `<span class="channel-hash">●</span><span>${channel.name}</span>${deleteBtn}`;
+                        li.onclick = () => selectChannel(channel.id, channel.name);
+                        channelList.appendChild(li);
+                    });
+                    // Select first channel by default
+                    if (data.channels.length > 0) {
+                        selectChannel(data.channels[0].id, data.channels[0].name);
+                    } else {
+                        channelList.innerHTML = '<li style="color: orange; padding: 15px;">No channels found in this workspace.</li>';
+                    }
+                } else {
+                    channelList.innerHTML = '<li style="color: red; padding: 15px;">Failed to load channels. Please try again.</li>';
+                }
+            } catch (error) {
+                console.error('Error loading channels:', error);
+                channelList.innerHTML = '<li style="color: red; padding: 15px;">Error loading channels. Please check your connection or workspace setup.</li>';
+            }
+        }
+
+        selectChannel = async function(channelId, channelName) {
+            // Update UI
+            document.querySelectorAll('.channel-item').forEach(item => item.classList.remove('active'));
+            
+            // Find and highlight the selected channel
+            const selectedItem = document.querySelector(`.channel-item[data-channel-id="${channelId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+            }
+
+            currentChannel = { id: channelId, name: channelName };
+
+            // Show main content
+            const mainContent = document.getElementById('mainContent');
+            mainContent.innerHTML = `
+                <div class="channel-header">
+                    <div class="channel-info">
+                        <h2># ${channelName}</h2>
+                        <span class="channel-description">Channel description</span>
+                    </div>
+                    <button class="video-call-btn" onclick="startVideoCall()">
+                        📹 Start Video Call
+                    </button>
+                </div>
+                <div class="messages-container" id="messagesContainer">
+                    <div class="loading">Loading messages...</div>
+                </div>
+                <div class="typing-indicator" id="typingIndicator"></div>
+                <div class="message-input-area">
+                    <div class="message-input-container">
+                        <textarea id="messageInput" placeholder="Message #${channelName}" rows="1" onkeydown="handleKeyPress(event)" oninput="handleTyping()"></textarea>
+                        <button class="send-button" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('rightSidebar').style.display = 'block';
+
+            // Join channel room via Socket.IO
+            console.log('📍 Joining channel:', channelId, channelName);
+            socket.emit('join_channel', { channel_id: channelId, user_id: currentUser.id });
+            
+            // Update diagnostic panel
+            document.getElementById('socketChannel').textContent = `${channelName} (#${channelId})`;
+            document.getElementById('socketChannel').style.color = 'lime';
+            document.getElementById('socketLastEvent').textContent = 'join_channel @ ' + new Date().toLocaleTimeString();
+            document.getElementById('socketLastEvent').style.color = 'cyan';
+
+            // Load messages
+            await loadMessages(channelId);
+            await loadOnlineUsers();
+        }
+
+        async function loadMessages(channelId) {
+            try {
+                const response = await fetch(`${API_URL}/messages?channel_id=${channelId}&limit=50`);
+                const data = await response.json();
+
+                const container = document.getElementById('messagesContainer');
+                container.innerHTML = '';
+
+                if (data.success && data.messages.length > 0) {
+                    data.messages.forEach(msg => addMessageToUI(msg));
+                } else {
+                    container.innerHTML = '<div class="loading">No messages yet. Start the conversation!</div>';
+                }
+
+                // Scroll to bottom
+                container.scrollTop = container.scrollHeight;
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        function addMessageToUI(message) {
+            const container = document.getElementById('messagesContainer');
+            if (!container) return;
+
+            // Remove "no messages" text if present
+            if (container.querySelector('.loading')) {
+                container.innerHTML = '';
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.dataset.messageId = message.id;
+
+            const initials = message.user_name.substring(0, 2).toUpperCase();
+            const time = new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const isOwnMessage = message.user_id === currentUser.id;
+            const deleteBtn = isOwnMessage ? `<button class="delete-btn" onclick="deleteMessage(${message.id})">🗑️ Delete</button>` : '';
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${initials}</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">${message.user_name}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-text">${escapeHtml(message.content)}</div>
+                </div>
+                <div class="message-actions">
+                    ${deleteBtn}
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        handleKeyPress = function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        handleTyping = function() {
+            if (!currentChannel) return;
+
+            // Send typing indicator
+            socket.emit('typing', {
+                channel_id: currentChannel.id,
+                user_id: currentUser.id,
+                user_name: currentUser.name,
+                is_typing: true
+            });
+
+            // Clear previous timeout
+            if (typingTimeout) clearTimeout(typingTimeout);
+
+            // Set new timeout to stop typing indicator
+            typingTimeout = setTimeout(() => {
+                socket.emit('typing', {
+                    channel_id: currentChannel.id,
+                    user_id: currentUser.id,
+                    user_name: currentUser.name,
+                    is_typing: false
+                });
+            }, 1000);
+        }
+
+        function showTypingIndicator(userName, isTyping) {
+            const indicator = document.getElementById('typingIndicator');
+            if (!indicator) return;
+
+            if (isTyping) {
+                indicator.textContent = `${userName} is typing...`;
+            } else {
+                indicator.textContent = '';
+            }
+        }
+
+        sendMessage = async function() {
+            const input = document.getElementById('messageInput');
+            const content = Security.sanitizeInput(input.value.trim());
+
+            if (!content || !currentChannel) return;
+
+            // Validate message
+            const validation = Security.validateMessage(content);
+            if (!validation.valid) {
+                alert(validation.message);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/messages`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        channel_id: currentChannel.id,
+                        user_id: currentUser.id,
+                        content: content
+                    })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    input.style.height = 'auto';
+                    
+                    // Stop typing indicator
+                    socket.emit('typing', {
+                        channel_id: currentChannel.id,
+                        user_id: currentUser.id,
+                        user_name: Security.escapeHTML(currentUser.name),
+                        is_typing: false
+                    });
+                } else {
+                    const data = await response.json();
+                    alert('Failed to send: ' + Security.escapeHTML(data.message));
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                Security.logSecurityEvent('MESSAGE_SEND_ERROR', { error: error.message });
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        deleteMessage = async function(messageId) {
+            if (!confirm('Are you sure you want to delete this message?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/messages/${messageId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.id })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Message will be removed via Socket.IO event
+                    console.log('Message deleted successfully');
+                } else {
+                    alert(data.message || 'Failed to delete message');
+                }
+            } catch (error) {
+                console.error('Error deleting message:', error);
+                alert('Failed to delete message. Please try again.');
+            }
+        }
+
+        deleteChannel = async function(channelId) {
+            if (!confirm('Are you sure you want to delete this channel? All messages will be permanently deleted.')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/channels/${channelId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.id })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Channel will be removed via Socket.IO event
+                    console.log('Channel deleted successfully');
+                } else {
+                    alert(data.message || 'Failed to delete channel');
+                }
+            } catch (error) {
+                console.error('Error deleting channel:', error);
+                alert('Failed to delete channel. Please try again.');
+            }
+        }
+
+        async function loadOnlineUsers() {
+            try {
+                // Check if currentWorkspace is loaded
+                if (!currentWorkspace || !currentWorkspace.id) {
+                    console.warn('Current workspace not loaded yet');
+                    return;
+                }
+
+                const response = await fetch(`${API_URL}/users/online?workspace_id=${currentWorkspace.id}`);
+                const data = await response.json();
+
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+
+                if (data.success && data.users.length > 0) {
+                    document.getElementById('memberCount').textContent = data.users.length;
+                    
+                    data.users.forEach(user => {
+                        const li = document.createElement('li');
+                        li.className = 'user-item';
+                        
+                        const initials = user.name.substring(0, 2).toUpperCase();
+                        
+                        li.innerHTML = `
+                            <div class="user-avatar">${initials}</div>
+                            <span class="user-name">${user.name}</span>
+                            <span class="user-status ${user.status}"></span>
+                        `;
+                        
+                        userList.appendChild(li);
+                    });
+                } else {
+                    document.getElementById('memberCount').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Modal functions
+        showInvitePeopleModal = async function() {
+            if (!currentWorkspace) {
+                alert('Please select a workspace first');
+                return;
+            }
+            
+            document.getElementById('invitePeopleModal').classList.add('active');
+            document.getElementById('inviteCodeDisplay').style.display = 'none';
+            document.getElementById('inviteLoading').style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_URL}/workspace/${currentWorkspace.id}/generate-invite`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        expires_days: 7
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('inviteCode').textContent = data.invite_code;
+                    document.getElementById('inviteLoading').style.display = 'none';
+                    document.getElementById('inviteCodeDisplay').style.display = 'block';
+                } else {
+                    alert('Failed to generate invite code: ' + data.message);
+                    closeModal('invitePeopleModal');
+                }
+            } catch (error) {
+                console.error('Error generating invite:', error);
+                alert('Failed to generate invite code. Please try again.');
+                closeModal('invitePeopleModal');
+            }
+        }
+
+        copyInviteCode = function() {
+            const code = document.getElementById('inviteCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ Invite code copied to clipboard!');
+            }).catch(() => {
+                alert('❌ Failed to copy. Code: ' + code);
+            });
+        }
+
+        joinWorkspaceByCode = async function() {
+            const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
+            
+            console.log('Join attempt - Code:', code, 'User ID:', currentUser?.id);
+            
+            if (!code) {
+                alert('Please enter an invite code');
+                return;
+            }
+            
+            if (!currentUser || !currentUser.id) {
+                alert('Please login first');
+                return;
+            }
+            
+            try {
+                console.log('Sending request to:', `${API_URL}/workspace/join-by-code`);
+                const response = await fetch(`${API_URL}/workspace/join-by-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        invite_code: code,
+                        user_id: currentUser.id
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Server response:', data);
+                
+                if (data.success) {
+                    alert(`✅ Successfully joined ${data.workspace_name}!`);
+                    closeModal('joinWorkspaceModal');
+                    location.reload();
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error joining workspace:', error);
+                alert('Failed to join workspace. Please try again. Error: ' + error.message);
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        createWorkspace = async function() {
+            const name = Security.sanitizeInput(document.getElementById('workspaceNameInput').value.trim());
+            const description = Security.sanitizeInput(document.getElementById('workspaceDescInput').value.trim());
+
+            if (!name) {
+                alert('Please enter a workspace name');
+                return;
+            }
+
+            // Check if user is logged in
+            if (!currentUser || !currentUser.id) {
+                alert('You must be logged in to create a workspace. Please login first.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Validate name
+            const nameValidation = Security.validateName(name);
+            if (!nameValidation.valid) {
+                alert(nameValidation.message);
+                return;
+            }
+
+            console.log('Creating workspace with user ID:', currentUser.id);
+
+            try {
+                const response = await fetch(`${API_URL}/workspaces`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description,
+                        owner_id: currentUser.id
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Server response:', data);
+
+                if (data.success) {
+                    closeModal('createWorkspaceModal');
+                    location.reload();
+                } else {
+                    alert('Failed to create workspace: ' + Security.escapeHTML(data.message));
+                }
+            } catch (error) {
+                console.error('Error creating workspace:', error);
+                Security.logSecurityEvent('WORKSPACE_CREATE_ERROR', { error: error.message });
+                alert('Failed to create workspace. Please try again. Check console for details.');
+            }
+        }
+
+        createChannel = async function() {
+            const name = Security.sanitizeInput(document.getElementById('channelNameInput').value.trim());
+            const description = Security.sanitizeInput(document.getElementById('channelDescInput').value.trim());
+
+            console.log('Creating channel:', { name, description, workspace: currentWorkspace, user: currentUser });
+
+            if (!name) {
+                alert('Please enter a channel name');
+                return;
+            }
+
+            if (!currentWorkspace || !currentWorkspace.id) {
+                alert('No workspace selected');
+                console.error('Current workspace:', currentWorkspace);
+                return;
+            }
+
+            // Validate name
+            const nameValidation = Security.validateName(name);
+            if (!nameValidation.valid) {
+                alert(nameValidation.message);
+                return;
+            }
+
+            try {
+                const payload = {
+                    workspace_id: currentWorkspace.id,
+                    name: name,
+                    description: description,
+                    created_by: currentUser.id
+                };
+                console.log('Sending request with payload:', payload);
+
+                const response = await fetch(`${API_URL}/channels`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    closeModal('createChannelModal');
+                    await loadChannels();
+                    document.getElementById('channelNameInput').value = '';
+                    document.getElementById('channelDescInput').value = '';
+                } else {
+                    alert('Failed to create channel: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error creating channel:', error);
+                alert('Failed to create channel: ' + error.message);
+            }
+        }
+
+        async function showBrowseChannelsModal() {
+            document.getElementById('browseChannelsModal').classList.add('active');
+            await loadAvailableChannels();
+        }
+
+        async function loadAvailableChannels() {
+            try {
+                const response = await fetch(`${API_URL}/channels/browse?workspace_id=${currentWorkspace.id}&user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                const container = document.getElementById('availableChannelsList');
+                container.innerHTML = '';
+
+                if (data.success && data.channels.length > 0) {
+                    data.channels.forEach(channel => {
+                        const channelDiv = document.createElement('div');
+                        channelDiv.style.cssText = 'padding: 15px; margin-bottom: 10px; background: #f8fafc; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;';
+                        
+                        channelDiv.innerHTML = `
+                            <div>
+                                <div style="font-weight: 700; font-size: 16px; color: #FFFFFF; margin-bottom: 4px;"># ${channel.name}</div>
+                                <div style="font-size: 14px; color: #FFFFFF;">${channel.description || 'No description'}</div>
+                                <div style="font-size: 12px; color: #FFFFFF; margin-top: 4px;">${channel.member_count} members</div>
+                            </div>
+                            <button onclick="joinChannel(${channel.id}, '${channel.name}')" 
+                                    style="padding: 10px 20px; background: linear-gradient(135deg, #000000 0%, #2563eb 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(51, 112, 255, 0.3);">
+                                Join
+                            </button>
+                        `;
+                        
+                        container.appendChild(channelDiv);
+                    });
+                } else {
+                    container.innerHTML = '<div class="loading">No channels available to join</div>';
+                }
+            } catch (error) {
+                console.error('Error loading channels:', error);
+                document.getElementById('availableChannelsList').innerHTML = '<div class="loading">Error loading channels</div>';
+            }
+        }
+
+        async function joinChannel(channelId, channelName) {
+            try {
+                const response = await fetch(`${API_URL}/channels/join`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        channel_id: channelId,
+                        user_id: currentUser.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeModal('browseChannelsModal');
+                    await loadChannels();
+                    alert(`Successfully joined #${channelName}!`);
+                } else {
+                    alert('Failed to join channel: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error joining channel:', error);
+                alert('Failed to join channel');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==================== VIDEO CALL FUNCTIONS ====================
+
+        async function startVideoCall() {
+            if (!currentChannel) {
+                alert('Please select a channel first');
+                return;
+            }
+
+            try {
+                // Get camera and microphone
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+
+                // Display local video
+                document.getElementById('localVideo').srcObject = localStream;
+                document.getElementById('videoContainer').classList.add('active');
+                isCallActive = true;
+
+                // Create peer connection
+                peerConnection = new RTCPeerConnection(rtcConfig);
+
+                // Add local stream to peer connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+
+                // Handle remote stream - manually build from tracks
+                peerConnection.ontrack = (event) => {
+                    console.log('🎥 Remote track received:', event.track.kind, event.track);
+                    console.log('Track settings:', event.track.getSettings());
+                    
+                    const remoteVideoEl = document.getElementById('remoteVideo');
+                    const statusEl = document.getElementById('remoteVideoStatus');
+                    
+                    // Create stream if it doesn't exist
+                    if (!remoteStream) {
+                        remoteStream = new MediaStream();
+                        remoteVideoEl.srcObject = remoteStream;
+                        console.log('🎉 Created new remote MediaStream');
+                    }
+                    
+                    // Add the track to our stream
+                    remoteStream.addTrack(event.track);
+                    console.log(`✅ Added ${event.track.kind} track to stream. Total tracks:`, remoteStream.getTracks().length);
+                    statusEl.textContent = `Received ${event.track.kind} track...`;
+                    
+                    // Play immediately when video track arrives (don't wait for audio)
+                    if (event.track.kind === 'video') {
+                        // Start muted for autoplay policy
+                        remoteVideoEl.muted = true;
+                        
+                        remoteVideoEl.play().then(() => {
+                            console.log('✅ Video playing! Size:', remoteVideoEl.videoWidth, 'x', remoteVideoEl.videoHeight);
+                            statusEl.textContent = 'Click to unmute 🔊';
+                            statusEl.style.cursor = 'pointer';
+                            
+                            // Click to unmute
+                            statusEl.onclick = () => {
+                                remoteVideoEl.muted = false;
+                                statusEl.style.display = 'none';
+                            };
+                            
+                            // Auto unmute after 2 seconds
+                            setTimeout(() => {
+                                remoteVideoEl.muted = false;
+                                statusEl.style.display = 'none';
+                            }, 2000);
+                        }).catch(e => {
+                            console.error('❌ Play error:', e);
+                            statusEl.textContent = 'Click to play ▶️';
+                            statusEl.style.cursor = 'pointer';
+                            statusEl.onclick = () => {
+                                remoteVideoEl.play();
+                                remoteVideoEl.muted = false;
+                                statusEl.style.display = 'none';
+                            };
+                        });
+                    }
+                };
+
+                // Monitor connection state
+                peerConnection.onconnectionstatechange = () => {
+                    console.log('🔌 Connection state:', peerConnection.connectionState);
+                    updateDebugOverlay(`Connection: ${peerConnection.connectionState}`);
+                    if (peerConnection.connectionState === 'failed') {
+                        console.error('❌ Connection failed - attempting ICE restart...');
+                        updateDebugOverlay('⚠️ FAILED - restarting');
+                        peerConnection.restartIce();
+                    } else if (peerConnection.connectionState === 'connected') {
+                        console.log('✅ Peer connection established!');
+                        updateDebugOverlay('✅ CONNECTED!');
+                    }
+                };
+
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('🧊 ICE connection state:', peerConnection.iceConnectionState);
+                    updateDebugOverlay(`ICE: ${peerConnection.iceConnectionState}`);
+                    if (peerConnection.iceConnectionState === 'failed') {
+                        console.error('❌ ICE connection failed');
+                    } else if (peerConnection.iceConnectionState === 'connected' || peerConnection.iceConnectionState === 'completed') {
+                        console.log('✅ ICE connected!');
+                        updateDebugOverlay('✅ ICE OK');
+                    }
+                };
+
+                peerConnection.onicegatheringstatechange = () => {
+                    console.log('📡 ICE gathering state:', peerConnection.iceGatheringState);
+                };
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        const debugMsg = `OUT: ${event.candidate.type} (${event.candidate.protocol})`;
+                        console.log('🧊 ICE candidate generated:', {
+                            type: event.candidate.type,
+                            protocol: event.candidate.protocol,
+                            address: event.candidate.address,
+                            port: event.candidate.port,
+                            candidate: event.candidate.candidate
+                        });
+                        updateDebugOverlay(debugMsg);
+                        socket.emit('ice_candidate', {
+                            channel_id: currentChannel.id,
+                            candidate: event.candidate,
+                            sender_id: currentUser.id
+                        });
+                    } else {
+                        console.log('✅ ICE gathering complete');
+                        updateDebugOverlay('ICE gathering DONE');
+                    }
+                };
+
+                // Create offer with ICE restart support
+                const offer = await peerConnection.createOffer({
+                    offerToReceiveAudio: true,
+                    offerToReceiveVideo: true
+                });
+                await peerConnection.setLocalDescription(offer);
+
+                // Send call initiation to channel
+                socket.emit('call_initiate', {
+                    channel_id: currentChannel.id,
+                    caller_id: currentUser.id,
+                    caller_name: currentUser.name,
+                    offer: offer
+                });
+
+                document.getElementById('remoteUserLabel').textContent = 'Waiting for others to join...';
+
+            } catch (error) {
+                console.error('Error starting video call:', error);
+                alert('Failed to access camera/microphone. Please grant permissions.');
+                hangup();
+            }
+        }
+
+        function toggleMute() {
+            if (!localStream) return;
+
+            const audioTrack = localStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                isMuted = !audioTrack.enabled;
+                
+                const muteBtn = document.getElementById('muteBtn');
+                muteBtn.classList.toggle('active', isMuted);
+                muteBtn.textContent = isMuted ? '🔇' : '🎤';
+            }
+        }
+
+        function toggleVideo() {
+            if (!localStream) return;
+
+            const videoTrack = localStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                isVideoOff = !videoTrack.enabled;
+                
+                const videoBtn = document.getElementById('videoBtn');
+                videoBtn.classList.toggle('off', isVideoOff);
+            }
+        }
+
+        async function toggleScreenShare() {
+            if (isScreenSharing) {
+                // Stop screen sharing, go back to camera
+                const videoTrack = localStream.getVideoTracks()[0];
+                
+                const newStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const newVideoTrack = newStream.getVideoTracks()[0];
+                
+                const sender = peerConnection.getSenders().find(s => s.track.kind === 'video');
+                sender.replaceTrack(newVideoTrack);
+                
+                localStream.removeTrack(videoTrack);
+                localStream.addTrack(newVideoTrack);
+                
+                videoTrack.stop();
+                isScreenSharing = false;
+                
+                document.getElementById('screenBtn').classList.remove('active');
+            } else {
+                // Start screen sharing
+                try {
+                    const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                    const screenTrack = screenStream.getVideoTracks()[0];
+                    
+                    const videoTrack = localStream.getVideoTracks()[0];
+                    const sender = peerConnection.getSenders().find(s => s.track.kind === 'video');
+                    sender.replaceTrack(screenTrack);
+                    
+                    localStream.removeTrack(videoTrack);
+                    localStream.addTrack(screenTrack);
+                    
+                    videoTrack.stop();
+                    isScreenSharing = true;
+                    
+                    document.getElementById('screenBtn').classList.add('active');
+                    
+                    // Handle screen share stop
+                    screenTrack.onended = () => {
+                        toggleScreenShare();
+                    };
+                } catch (error) {
+                    console.error('Error sharing screen:', error);
+                    alert('Failed to share screen');
+                }
+            }
+        }
+
+        function hangup() {
+            // Stop all tracks
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+                remoteStream = null;
+            }
+
+            // Close peer connection
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            // Notify others
+            if (socket && currentChannel) {
+                socket.emit('call_end', {
+                    channel_id: currentChannel.id,
+                    user_id: currentUser.id
+                });
+            }
+
+            // Clear video elements
+            document.getElementById('localVideo').srcObject = null;
+            document.getElementById('remoteVideo').srcObject = null;
+
+            // Hide video container
+            document.getElementById('videoContainer').classList.remove('active');
+            isCallActive = false;
+            isMuted = false;
+            isVideoOff = false;
+            isScreenSharing = false;
+
+            // Reset button states
+            document.getElementById('muteBtn').classList.remove('active');
+            document.getElementById('videoBtn').classList.remove('off');
+            document.getElementById('screenBtn').classList.remove('active');
+        }
+
+        function acceptCall() {
+            if (!incomingCallData) return;
+
+            document.getElementById('incomingCallModal').classList.remove('active');
+
+            // Start the call with incoming offer
+            handleIncomingCall(incomingCallData);
+        }
+
+        function declineCall() {
+            document.getElementById('incomingCallModal').classList.remove('active');
+            
+            if (incomingCallData && socket) {
+                socket.emit('call_declined', {
+                    channel_id: incomingCallData.channel_id,
+                    caller_id: incomingCallData.caller_id,
+                    decliner_id: currentUser.id
+                });
+            }
+            
+            incomingCallData = null;
+        }
+
+        async function handleIncomingCall(data) {
+            try {
+                // Get camera and microphone
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+
+                document.getElementById('localVideo').srcObject = localStream;
+                document.getElementById('videoContainer').classList.add('active');
+                isCallActive = true;
+
+                // Create peer connection
+                peerConnection = new RTCPeerConnection(rtcConfig);
+
+                // Add local stream
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+
+                // Handle remote stream - manually build from tracks
+                peerConnection.ontrack = (event) => {
+                    console.log('🎥 Remote track received:', event.track.kind, event.track);
+                    console.log('Track settings:', event.track.getSettings());
+                    
+                    const remoteVideoEl = document.getElementById('remoteVideo');
+                    const statusEl = document.getElementById('remoteVideoStatus');
+                    
+                    // Create stream if it doesn't exist
+                    if (!remoteStream) {
+                        remoteStream = new MediaStream();
+                        remoteVideoEl.srcObject = remoteStream;
+                        document.getElementById('remoteUserLabel').textContent = data.caller_name;
+                        console.log('🎉 Created new remote MediaStream');
+                    }
+                    
+                    // Add the track to our stream
+                    remoteStream.addTrack(event.track);
+                    console.log(`✅ Added ${event.track.kind} track to stream. Total tracks:`, remoteStream.getTracks().length);
+                    statusEl.textContent = `Received ${event.track.kind} track...`;
+                    
+                    // Play immediately when video track arrives (don't wait for audio)
+                    if (event.track.kind === 'video') {
+                        // Start muted for autoplay policy
+                        remoteVideoEl.muted = true;
+                        
+                        remoteVideoEl.play().then(() => {
+                            console.log('✅ Video playing! Size:', remoteVideoEl.videoWidth, 'x', remoteVideoEl.videoHeight);
+                            statusEl.textContent = 'Click to unmute 🔊';
+                            statusEl.style.cursor = 'pointer';
+                            
+                            // Click to unmute
+                            statusEl.onclick = () => {
+                                remoteVideoEl.muted = false;
+                                statusEl.style.display = 'none';
+                            };
+                            
+                            // Auto unmute after 2 seconds
+                            setTimeout(() => {
+                                remoteVideoEl.muted = false;
+                                statusEl.style.display = 'none';
+                            }, 2000);
+                        }).catch(e => {
+                            console.error('❌ Play error:', e);
+                            statusEl.textContent = 'Click to play ▶️';
+                            statusEl.style.cursor = 'pointer';
+                            statusEl.onclick = () => {
+                                remoteVideoEl.play();
+                                remoteVideoEl.muted = false;
+                                statusEl.style.display = 'none';
+                            };
+                        });
+                    }
+                };
+
+                // Monitor connection state
+                peerConnection.onconnectionstatechange = () => {
+                    console.log('🔌 Connection state:', peerConnection.connectionState);
+                    if (peerConnection.connectionState === 'failed') {
+                        console.error('❌ Connection failed - attempting ICE restart...');
+                        peerConnection.restartIce();
+                    } else if (peerConnection.connectionState === 'connected') {
+                        console.log('✅ Peer connection established!');
+                        document.getElementById('remoteUserLabel').textContent = data.caller_name + ' (Connected)';
+                    }
+                };
+
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('🧊 ICE connection state:', peerConnection.iceConnectionState);
+                    if (peerConnection.iceConnectionState === 'failed') {
+                        console.error('❌ ICE connection failed');
+                    } else if (peerConnection.iceConnectionState === 'connected' || peerConnection.iceConnectionState === 'completed') {
+                        console.log('✅ ICE connected!');
+                    }
+                };
+
+                peerConnection.onicegatheringstatechange = () => {
+                    console.log('📡 ICE gathering state:', peerConnection.iceGatheringState);
+                };
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        const debugMsg = `OUT: ${event.candidate.type} (${event.candidate.protocol})`;
+                        console.log('🧊 Sending ICE candidate:', event.candidate.type);
+                        updateDebugOverlay(debugMsg);
+                        socket.emit('ice_candidate', {
+                            channel_id: data.channel_id,
+                            candidate: event.candidate,
+                            sender_id: currentUser.id
+                        });
+                    } else {
+                        console.log('✅ ICE gathering complete');
+                        updateDebugOverlay('ICE gathering DONE');
+                    }
+                };
+
+                // Set remote description (offer)
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+
+                // Create answer with ICE restart support
+                const answer = await peerConnection.createAnswer({
+                    offerToReceiveAudio: true,
+                    offerToReceiveVideo: true
+                });
+                await peerConnection.setLocalDescription(answer);
+
+                // Send answer
+                socket.emit('call_answer', {
+                    channel_id: data.channel_id,
+                    answerer_id: currentUser.id,
+                    caller_id: data.caller_id,
+                    answer: answer
+                });
+
+            } catch (error) {
+                console.error('Error handling incoming call:', error);
+                alert('Failed to join call');
+                hangup();
+            }
+        }
+
+        // Debug overlay for visual feedback
+        function updateDebugOverlay(message) {
+            let overlay = document.getElementById('debugOverlay');
+            if (!overlay) return;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.textContent = `${timestamp}: ${message}`;
+            overlay.appendChild(div);
+            
+            // Keep only last 10 messages
+            while (overlay.children.length > 10) {
+                overlay.removeChild(overlay.firstChild);
+            }
+            
+            // Auto scroll to bottom
+            overlay.scrollTop = overlay.scrollHeight;
+        }
+
+        // Handle page unload
+        window.addEventListener('beforeunload', () => {
+            if (socket && currentUser) {
+                socket.emit('user_status', { user_id: currentUser.id, status: 'offline' });
+            }
+            // End call if active
+            if (isCallActive) {
+                hangup();
+            }
+        });
+        
+        // TEST FUNCTIONS FOR DIAGNOSTICS
+        testSocketConnection = function() {
+            const statusEl = document.getElementById('socketStatusText');
+            const lastEventEl = document.getElementById('socketLastEvent');
+            const channelEl = document.getElementById('socketChannel');
+            
+            // Check if socket is connected
+            if (!socket) {
+                alert('❌ ERROR: Socket object does not exist!\nThe page may not have loaded correctly.');
+                statusEl.textContent = 'NO SOCKET ❌';
+                statusEl.style.color = 'red';
+                return;
+            }
+            
+            if (!socket.connected) {
+                alert('❌ SOCKET.IO NOT CONNECTED!\n\nThis is why you\'re not getting calls.\n\nTry:\n1. Check internet connection\n2. Refresh the page (Ctrl+Shift+R)\n3. Check if port 5001 server is running');
+                statusEl.textContent = 'DISCONNECTED ❌';
+                statusEl.style.color = 'red';
+                return;
+            }
+            
+            // Socket is connected - send test message
+            lastEventEl.textContent = 'TEST @ ' + new Date().toLocaleTimeString();
+            lastEventEl.style.color = 'yellow';
+            
+            if (!currentChannel || !currentChannel.id) {
+                alert('✅ Socket.IO is CONNECTED!\nSID: ' + socket.id + '\n\n⚠️ But no channel is selected.\nSelect a channel first to test messaging.');
+                return;
+            }
+            
+            // Send test message to current channel
+            const testMsg = `[TEST] Socket.IO working! Time: ${new Date().toLocaleTimeString()}`;
+            socket.emit('send_message', {
+                channel_id: currentChannel.id,
+                content: testMsg
+            });
+            
+            alert('✅ Socket.IO CONNECTED & WORKING!\n\nSID: ' + socket.id + '\nChannel: ' + currentChannel.name + '\n\nTest message sent! Check if it appears in chat.\n\nIf message appears = Socket.IO is working perfectly.\nIf not = Server issue, not Socket.IO issue.');
+        }
+        
+        forceRefreshChannel = function() {
+            if (!currentChannel || !currentChannel.id) {
+                alert('⚠️ No channel selected. Select a channel first.');
+                return;
+            }
+            
+            if (!socket || !socket.connected) {
+                alert('❌ Socket.IO not connected! Cannot rejoin channel.');
+                return;
+            }
+            
+            console.log('🔄 Force rejoining channel:', currentChannel.id);
+            
+            // Leave and rejoin
+            socket.emit('leave_channel', { channel_id: currentChannel.id, user_id: currentUser.id });
+            
+            setTimeout(() => {
+                socket.emit('join_channel', { channel_id: currentChannel.id, user_id: currentUser.id });
+                
+                document.getElementById('socketLastEvent').textContent = 'FORCE REJOIN @ ' + new Date().toLocaleTimeString();
+                document.getElementById('socketLastEvent').style.color = 'yellow';
+                
+                alert('✅ Forcefully rejoined channel: ' + currentChannel.name + '\n\nNow try making a call again.');
+            }, 500);
+
+        }
+        // End of try block for window.onload
+    } catch (e) {
+        console.error('Error in window.onload:', e);
+        alert('A critical error occurred. Please reload the page.');
+    }
+    // End of window.onload
+}
+    </script>
+
+    <!-- Video Call Container -->
+    <div class="video-container" id="videoContainer">
+        <div class="debug-overlay" id="debugOverlay">
+            <div>WebRTC Debug Log:</div>
+        </div>
+        <div class="videos-grid">
+            <div class="video-wrapper">
+                <video id="localVideo" autoplay muted playsinline></video>
+                <div class="video-label">You</div>
+            </div>
+            <div class="video-wrapper">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <div class="video-status" id="remoteVideoStatus">Waiting for remote stream...</div>
+                <div class="video-label" id="remoteUserLabel">Connecting...</div>
+            </div>
+        </div>
+        <div class="call-controls">
+            <button class="call-btn mute" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute">
+                🎤
+            </button>
+            <button class="call-btn video" id="videoBtn" onclick="toggleVideo()" title="Turn Camera On/Off">
+                📹
+            </button>
+            <button class="call-btn screen" id="screenBtn" onclick="toggleScreenShare()" title="Share Screen">
+                🖥️
+            </button>
+            <button class="call-btn hangup" onclick="hangup()" title="End Call">
+                📞
+            </button>
+        </div>
+    </div>
+
+    <!-- Incoming Call Modal -->
+    <div class="incoming-call-modal" id="incomingCallModal">
+        <h3>📞 Incoming Call</h3>
+        <p><strong id="callerName">Someone</strong> is calling you...</p>
+        <div class="incoming-call-btns">
+            <button class="accept-call" onclick="acceptCall()">Accept</button>
+            <button class="decline-call" onclick="declineCall()">Decline</button>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draxyl - Legal & Privacy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #000000;
+            background: #f8f9ff;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #FFFFFF;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FFFFFF;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white !important;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            padding: 150px 20px 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Quick Links */
+        .quick-links {
+            background: #000000;
+            padding: 30px 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+        }
+
+        .quick-links-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            padding: 15px 30px;
+            background: #1a1a1a;
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-link:hover {
+            background: #000000;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(51, 112, 255, 0.3);
+        }
+
+        /* Content Sections */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .legal-section {
+            padding: 80px 20px;
+            background: #e8e8e8;
+            margin: 30px auto;
+            max-width: 900px;
+            border-radius: 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.05);
+        }
+
+        .legal-section:nth-of-type(even) {
+            background: #e8e8e8;
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(odd) {
+            background: #f8f9ff;
+            color: #000000;
+        }
+
+        .section-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .legal-section:nth-of-type(even) .section-title {
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(odd) .section-title {
+            color: #000000;
+        }
+
+        .section-title span {
+            font-size: 2.5rem;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .legal-section:nth-of-type(even) .last-updated {
+            color: #888;
+        }
+
+        .legal-section:nth-of-type(odd) .last-updated {
+            color: #666;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 40px 0 15px;
+            padding-bottom: 10px;
+        }
+
+        .legal-section:nth-of-type(even) h3 {
+            color: #000000;
+            border-bottom: 2px solid #d0d0d0;
+        }
+
+        .legal-section:nth-of-type(odd) h3 {
+            color: #000000;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            margin: 25px 0 10px;
+        }
+
+        .legal-section:nth-of-type(even) h4 {
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(odd) h4 {
+            color: #000000;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .legal-section:nth-of-type(even) p {
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(odd) p {
+            color: #000000;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        .legal-section:nth-of-type(even) ul,
+        .legal-section:nth-of-type(even) ol {
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(odd) ul,
+        .legal-section:nth-of-type(odd) ol {
+            color: #000000;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: #1a1a1a;
+            border-left: 4px solid #3b82f6;
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: #FFFFFF;
+        }
+
+        .legal-section:nth-of-type(odd) .highlight-box {
+            background: #FFFFFF;
+            border-left: 4px solid #000000;
+        }
+
+        .legal-section:nth-of-type(odd) .highlight-box p {
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(even) .highlight-box {
+            background: #FFFFFF;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .legal-section:nth-child(even) .highlight-box p {
+            color: #FFFFFF;
+        }
+
+        .warning-box {
+            background: #1a1a1a;
+            border-left: 4px solid #ff9800;
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+            color: #FFFFFF;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .security-card {
+            background: #000000;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .security-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .security-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .security-card h4 {
+            margin: 0 0 10px;
+            color: #FFFFFF;
+        }
+
+        .security-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #FFFFFF;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .legal-section:nth-of-type(even) table {
+            background: #FFFFFF;
+        }
+
+        .legal-section:nth-of-type(odd) table {
+            background: #FFFFFF;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+        }
+
+        .legal-section:nth-of-type(even) th,
+        .legal-section:nth-of-type(even) td {
+            border-bottom: 1px solid #ddd;
+            color: #000000;
+        }
+
+        .legal-section:nth-of-type(odd) th,
+        .legal-section:nth-of-type(odd) td {
+            border-bottom: 1px solid #eee;
+            color: #000000;
+        }
+
+        th {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            font-weight: 600;
+        }
+
+        .legal-section:nth-of-type(odd) th {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .legal-section:nth-of-type(odd) tr:hover {
+            background: #f8f9ff;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-section p {
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            text-align: center;
+        }
+
+        .contact-item .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .contact-item h4 {
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .contact-item p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.6);
+            margin: 0;
+        }
+
+        .footer a {
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(51, 112, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(51, 112, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="Draxyl-website.html" class="logo">💬 Draxyl</a>
+            <div class="nav-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#cookies">Cookie Policy</a>
+                <a href="#security">Security</a>
+                <a href="Draxyl-website.html" class="back-btn">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="top">
+        <h1>📋 Legal & Privacy Center</h1>
+        <p>Your trust is our priority. Learn about how we protect your data, our terms of service, and our commitment to security.</p>
+    </section>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <div class="quick-links-container">
+            <a href="#privacy" class="quick-link">🔒 Privacy Policy</a>
+            <a href="#terms" class="quick-link">📜 Terms of Service</a>
+            <a href="#cookies" class="quick-link">🍪 Cookie Policy</a>
+            <a href="#security" class="quick-link">🛡️ Security</a>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Section -->
+    <section class="legal-section" id="privacy">
+        <div class="container">
+            <h2 class="section-title"><span>🔒</span> Privacy Policy</h2>
+            <p class="last-updated">Last Updated: December 14, 2025</p>
+
+            <div class="highlight-box">
+                <p><strong>Our Commitment:</strong> At Draxyl, we believe privacy is a fundamental right. We are committed to being transparent about the data we collect and how we use it to provide and improve our services.</p>
+            </div>
+
+            <h3>1. Introduction</h3>
+            <p>Welcome to Draxyl's Privacy Policy. This policy describes how Draxyl-Presents ("Draxyl," "we," "us," or "our") collects, uses, shares, and protects your personal information when you use our communication and collaboration platform.</p>
+            <p>By using Draxyl, you agree to the collection and use of information in accordance with this policy. We encourage you to read this Privacy Policy carefully and contact us if you have any questions.</p>
+
+            <h3>2. Information We Collect</h3>
+            
+            <h4>2.1 Information You Provide</h4>
+            <ul>
+                <li><strong>Account Information:</strong> Name, email address, phone number, profile picture, and password when you create an account.</li>
+                <li><strong>Profile Information:</strong> Job title, department, organization name, and other professional details you choose to add.</li>
+                <li><strong>Communications:</strong> Messages, files, images, videos, and other content you share through our platform.</li>
+                <li><strong>Meeting Data:</strong> Video conference recordings (when enabled), meeting notes, and calendar information.</li>
+                <li><strong>Payment Information:</strong> Billing address and payment details for premium subscriptions (processed by secure third-party payment processors).</li>
+            </ul>
+
+            <h4>2.2 Information Collected Automatically</h4>
+            <ul>
+                <li><strong>Device Information:</strong> Device type, operating system, browser type, unique device identifiers, and mobile network information.</li>
+                <li><strong>Usage Data:</strong> Features used, time spent on the platform, click patterns, and interaction with other users.</li>
+                <li><strong>Log Data:</strong> IP address, access times, pages viewed, and the page you visited before navigating to our platform.</li>
+                <li><strong>Location Data:</strong> General location based on IP address; precise location only with your explicit consent.</li>
+            </ul>
+
+            <h4>2.3 Information from Third Parties</h4>
+            <ul>
+                <li><strong>Integration Partners:</strong> Data from services you connect to Draxyl (Google Drive, Microsoft 365, etc.).</li>
+                <li><strong>Organization Administrators:</strong> Information provided by your employer or organization administrator.</li>
+                <li><strong>Public Sources:</strong> Publicly available business information to enhance organization profiles.</li>
+            </ul>
+
+            <h3>3. How We Use Your Information</h3>
+            <p>We use the information we collect for the following purposes:</p>
+            <ul>
+                <li><strong>Provide Services:</strong> Deliver, maintain, and improve our communication and collaboration features.</li>
+                <li><strong>Personalization:</strong> Customize your experience based on your preferences and usage patterns.</li>
+                <li><strong>Communication:</strong> Send service updates, security alerts, and support messages.</li>
+                <li><strong>Safety & Security:</strong> Detect, prevent, and address fraud, abuse, and security issues.</li>
+                <li><strong>Analytics:</strong> Understand how users interact with our platform to improve features.</li>
+                <li><strong>Legal Compliance:</strong> Comply with applicable laws, regulations, and legal processes.</li>
+                <li><strong>Research & Development:</strong> Develop new features and services (using anonymized data).</li>
+            </ul>
+
+            <div class="highlight-box">
+                <h3>🛡️ Military-Grade Database Security</h3>
+                <p style="font-size: 1.05rem; margin-bottom: 12px;"><strong>Your Data is Protected Even if Hackers Strike:</strong></p>
+                <p>We protect your personal information with bcrypt encryption (cost factor 12)—the same military-grade technology used by banks, government agencies, and Fortune 500 companies. Even if hackers manage to steal our entire database, your personal data including your account credentials, password, and email are <strong>HUMANLY IMPOSSIBLE</strong> to crack.</p>
+                <p style="margin-top: 15px;"><strong>What This Means for You:</strong></p>
+                <ul style="margin-top: 10px; padding-left: 25px;">
+                    <li>Your passwords require approximately <strong>500+ years to decrypt</strong> with modern hardware</li>
+                    <li>Unique cryptographic salts make rainbow table attacks impossible</li>
+                    <li>Even with supercomputers, your credentials remain secure for centuries</li>
+                    <li>Database breaches cannot expose your actual password—only encrypted hashes</li>
+                    <li>In the unlikely event of a breach, we will <strong>immediately notify you</strong> and provide guidance</li>
+                    <li><strong>Emergency Protection:</strong> If hackers manage to steal the database, your personal data including your account credentials, password, and email will be <strong>immediately deleted from our systems</strong> to ensure your personal information cannot be accessed or misused and ,<strong>ONLY</strong> restored from a secure backup after the breach is resolved.</li>
+                    <li><strong>Automatic Account Deletion:</strong> If a database breach is detected or hackers manage to steal our database, <strong>ALL user accounts will be immediately and automatically deleted</strong> from our systems until the database is fully secured and recovered. You will be notified immediately and can re-register once security is restored.</li>
+                    <li>This nuclear option ensures that even if our database is compromised, there will be <strong>ZERO recoverable user data</strong> for hackers to exploit</li>
+                </ul>
+                <p style="margin-top: 15px; font-style: italic; opacity: 0.95;">We take your security seriously. While we employ multiple layers of protection to prevent breaches, our encryption ensures that even in the worst-case scenario, your personal credentials are mathematically uncrackable within any reasonable timeframe. Our automatic deletion protocol provides an additional layer of protection by ensuring compromised data is immediately purged.</p>
+            </div>
+
+            <h3>4. Information Sharing</h3>
+            <p>We do not sell your personal information. We may share your information in the following circumstances:</p>
+
+            <table>
+                <tr>
+                    <th>Recipient</th>
+                    <th>Purpose</th>
+                    <th>Data Shared</th>
+                </tr>
+                <tr>
+                    <td>Organization Members</td>
+                    <td>Enable collaboration</td>
+                    <td>Profile, messages, shared files</td>
+                </tr>
+                <tr>
+                    <td>Service Providers</td>
+                    <td>Operate our platform</td>
+                    <td>As needed for services</td>
+                </tr>
+                <tr>
+                    <td>Integration Partners</td>
+                    <td>Enable connected apps</td>
+                    <td>As authorized by you</td>
+                </tr>
+                <tr>
+                    <td>Legal Authorities</td>
+                    <td>Comply with law</td>
+                    <td>As legally required</td>
+                </tr>
+                <tr>
+                    <td>Business Transfers</td>
+                    <td>Mergers/acquisitions</td>
+                    <td>Subject to this policy</td>
+                </tr>
+            </table>
+
+            <h3>5. Data Retention</h3>
+            <p>We retain your information for as long as necessary to provide our services and fulfill the purposes described in this policy. Specific retention periods include:</p>
+            <ul>
+                <li><strong>Account Data:</strong> Retained while your account is active and for 30 days after deletion request.</li>
+                <li><strong>Messages & Files:</strong> Retained according to your organization's settings or until deleted.</li>
+                <li><strong>Log Data:</strong> Typically retained for 90 days for security purposes.</li>
+                <li><strong>Backup Data:</strong> May be retained for up to 180 days in encrypted backups.</li>
+            </ul>
+
+            <h3>6. Your Rights & Choices</h3>
+            <p>Depending on your location, you may have the following rights:</p>
+            <ul>
+                <li><strong>Access:</strong> Request a copy of your personal data.</li>
+                <li><strong>Correction:</strong> Update or correct inaccurate information.</li>
+                <li><strong>Deletion:</strong> Request deletion of your personal data.</li>
+                <li><strong>Portability:</strong> Receive your data in a machine-readable format.</li>
+                <li><strong>Objection:</strong> Object to certain processing activities.</li>
+                <li><strong>Restriction:</strong> Request limited processing of your data.</li>
+                <li><strong>Withdrawal:</strong> Withdraw consent where processing is based on consent.</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>Exercise Your Rights:</strong> To exercise any of these rights, please contact us at privacy@Draxyl-Presents.com or through the Privacy Settings in your account.</p>
+            </div>
+
+            <h3>7. International Data Transfers</h3>
+            <p>Draxyl operates globally. Your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place, including:</p>
+            <ul>
+                <li>Standard Contractual Clauses approved by regulatory authorities</li>
+                <li>Compliance with EU-US Data Privacy Framework</li>
+                <li>Data Processing Agreements with all service providers</li>
+            </ul>
+
+            <h3>8. Children's Privacy</h3>
+            <p>Draxyl is designed for business use and is not intended for children under 16. We do not knowingly collect personal information from children under 16. If we discover we have collected such information, we will delete it promptly.</p>
+
+            <h3>9. Changes to This Policy</h3>
+            <p>We may update this Privacy Policy from time to time. We will notify you of significant changes through email or platform notifications. Your continued use after changes constitutes acceptance of the updated policy.</p>
+        </div>
+    </section>
+
+    <!-- Terms of Service Section -->
+    <section class="legal-section" id="terms">
+        <div class="container">
+            <h2 class="section-title"><span>📜</span> Terms of Service</h2>
+            <p class="last-updated">Last Updated: December 14, 2025</p>
+
+            <div class="highlight-box">
+                <p><strong>Agreement:</strong> These Terms of Service ("Terms") constitute a legal agreement between you and Draxyl-Presents. By accessing or using Draxyl, you agree to be bound by these Terms.</p>
+            </div>
+
+            <h3>1. Acceptance of Terms</h3>
+            <p>By creating an account, accessing, or using Draxyl services, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you are using Draxyl on behalf of an organization, you represent that you have the authority to bind that organization to these Terms.</p>
+
+            <h3>2. Description of Services</h3>
+            <p>Draxyl provides a comprehensive workplace communication and collaboration platform including:</p>
+            <ul>
+                <li>Instant messaging and group chat</li>
+                <li>Video and audio conferencing</li>
+                <li>File sharing and cloud storage</li>
+                <li>Task management and workflow automation</li>
+                <li>Calendar and scheduling tools</li>
+                <li>Third-party app integrations</li>
+                <li>AI-powered assistant features</li>
+            </ul>
+
+            <h3>3. Account Registration</h3>
+            <h4>3.1 Eligibility</h4>
+            <p>You must be at least 16 years old to use Draxyl. By registering, you represent that:</p>
+            <ul>
+                <li>You meet the minimum age requirement</li>
+                <li>All registration information is accurate and truthful</li>
+                <li>You will maintain the accuracy of your information</li>
+                <li>Your use will comply with all applicable laws</li>
+            </ul>
+
+            <h4>3.2 Account Security</h4>
+            <p>You are responsible for:</p>
+            <ul>
+                <li>Maintaining the confidentiality of your login credentials</li>
+                <li>All activities that occur under your account</li>
+                <li>Notifying us immediately of any unauthorized access</li>
+                <li>Using strong, unique passwords</li>
+            </ul>
+
+            <h3>4. Acceptable Use Policy</h3>
+            <p>You agree NOT to use Draxyl to:</p>
+            <ul>
+                <li>Violate any applicable laws or regulations</li>
+                <li>Infringe intellectual property rights of others</li>
+                <li>Transmit malware, viruses, or harmful code</li>
+                <li>Send spam, unsolicited messages, or phishing attempts</li>
+                <li>Harass, threaten, or abuse other users</li>
+                <li>Impersonate any person or entity</li>
+                <li>Interfere with or disrupt the platform</li>
+                <li>Attempt unauthorized access to systems or data</li>
+                <li>Collect user information without consent</li>
+                <li>Use the platform for illegal activities</li>
+            </ul>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Violation Consequences:</strong> Violation of these policies may result in immediate account suspension or termination, and may be reported to law enforcement authorities where appropriate.</p>
+            </div>
+
+            <h3>5. User Content</h3>
+            <h4>5.1 Your Content</h4>
+            <p>You retain ownership of content you create and share through Draxyl. By sharing content, you grant us a limited license to:</p>
+            <ul>
+                <li>Store, display, and distribute your content to intended recipients</li>
+                <li>Create backups for service reliability</li>
+                <li>Modify for technical compatibility (e.g., format conversion)</li>
+            </ul>
+
+            <h4>5.2 Content Responsibility</h4>
+            <p>You are solely responsible for:</p>
+            <ul>
+                <li>All content you upload, share, or transmit</li>
+                <li>Ensuring you have rights to share such content</li>
+                <li>Compliance with applicable laws regarding your content</li>
+            </ul>
+
+            <h3>6. Subscription & Payments</h3>
+            <h4>6.1 Free Tier</h4>
+            <p>Draxyl offers a free tier with limited features. Free accounts are subject to usage limits and may display promotional content.</p>
+
+            <h4>6.2 Paid Subscriptions</h4>
+            <ul>
+                <li>Subscription fees are billed in advance on a monthly or annual basis</li>
+                <li>All fees are non-refundable except as required by law</li>
+                <li>Prices may change with 30 days notice</li>
+                <li>Failure to pay may result in service suspension</li>
+            </ul>
+
+            <h4>6.3 Cancellation</h4>
+            <p>You may cancel your subscription at any time through account settings. Cancellation takes effect at the end of the current billing period.</p>
+
+            <h3>7. Intellectual Property</h3>
+            <p>Draxyl and its original content, features, and functionality are owned by Draxyl-Presents and are protected by international copyright, trademark, and other intellectual property laws. Our trademarks may not be used without prior written permission.</p>
+
+            <h3>8. Third-Party Services</h3>
+            <p>Draxyl may integrate with third-party services. Your use of such services is subject to their respective terms and privacy policies. We are not responsible for third-party services.</p>
+
+            <h3>9. Disclaimers</h3>
+            <p>Draxyl IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND. TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING:</p>
+            <ul>
+                <li>MERCHANTABILITY</li>
+                <li>FITNESS FOR A PARTICULAR PURPOSE</li>
+                <li>NON-INFRINGEMENT</li>
+                <li>CONTINUOUS, UNINTERRUPTED, OR SECURE ACCESS</li>
+            </ul>
+
+            <h3>10. Limitation of Liability</h3>
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, Draxyl-Presents SHALL NOT BE LIABLE FOR:</p>
+            <ul>
+                <li>Indirect, incidental, special, or consequential damages</li>
+                <li>Loss of profits, data, or business opportunities</li>
+                <li>Damages exceeding fees paid in the 12 months prior to the claim</li>
+            </ul>
+
+            <h3>11. Indemnification</h3>
+            <p>You agree to indemnify and hold harmless Draxyl-Presents from any claims, damages, or expenses arising from:</p>
+            <ul>
+                <li>Your use of the platform</li>
+                <li>Your violation of these Terms</li>
+                <li>Your violation of any third-party rights</li>
+            </ul>
+
+            <h3>12. Termination</h3>
+            <p>We may suspend or terminate your account at any time for violation of these Terms. Upon termination:</p>
+            <ul>
+                <li>Your right to use the platform ceases immediately</li>
+                <li>We may delete your data after a reasonable retention period</li>
+                <li>Provisions that should survive termination will remain in effect</li>
+            </ul>
+
+            <h3>13. Governing Law</h3>
+            <p>These Terms are governed by the laws of the jurisdiction where Draxyl-Presents is established, without regard to conflict of law principles.</p>
+
+            <h3>14. Dispute Resolution</h3>
+            <p>Any disputes shall be resolved through:</p>
+            <ol>
+                <li>Good faith negotiation between parties</li>
+                <li>Mediation by a mutually agreed mediator</li>
+                <li>Binding arbitration as a last resort</li>
+            </ol>
+
+            <h3>15. Changes to Terms</h3>
+            <p>We reserve the right to modify these Terms at any time. Material changes will be notified at least 30 days in advance. Continued use after changes constitutes acceptance.</p>
+        </div>
+    </section>
+
+    <!-- Cookie Policy Section -->
+    <section class="legal-section" id="cookies">
+        <div class="container">
+            <h2 class="section-title"><span>🍪</span> Cookie Policy</h2>
+            <p class="last-updated">Last Updated: December 14, 2025</p>
+
+            <div class="highlight-box">
+                <p><strong>About Cookies:</strong> Cookies are small text files stored on your device that help us provide and improve our services. This policy explains how Draxyl uses cookies and similar technologies.</p>
+            </div>
+
+            <h3>1. What Are Cookies?</h3>
+            <p>Cookies are small data files placed on your computer or mobile device when you visit a website. They are widely used to make websites work efficiently and provide reporting information.</p>
+            <p>Cookies set by the website owner (Draxyl) are called "first-party cookies." Cookies set by parties other than the website owner are called "third-party cookies."</p>
+
+            <h3>2. Types of Cookies We Use</h3>
+
+            <table>
+                <tr>
+                    <th>Cookie Type</th>
+                    <th>Purpose</th>
+                    <th>Duration</th>
+                </tr>
+                <tr>
+                    <td>🔧 Essential</td>
+                    <td>Required for basic functionality (login, security)</td>
+                    <td>Session / 1 year</td>
+                </tr>
+                <tr>
+                    <td>⚡ Performance</td>
+                    <td>Analyze how visitors use our platform</td>
+                    <td>Up to 2 years</td>
+                </tr>
+                <tr>
+                    <td>🎨 Functional</td>
+                    <td>Remember preferences (language, theme)</td>
+                    <td>1 year</td>
+                </tr>
+                <tr>
+                    <td>📢 Marketing</td>
+                    <td>Deliver relevant advertisements</td>
+                    <td>Up to 2 years</td>
+                </tr>
+            </table>
+
+            <h3>3. Essential Cookies</h3>
+            <p>These cookies are strictly necessary for the platform to function. They enable:</p>
+            <ul>
+                <li><strong>Authentication:</strong> Keep you logged in as you navigate</li>
+                <li><strong>Security:</strong> Prevent fraudulent activity and protect your account</li>
+                <li><strong>Load Balancing:</strong> Distribute traffic for optimal performance</li>
+                <li><strong>Session Management:</strong> Maintain your session state</li>
+            </ul>
+            <p><em>You cannot opt out of essential cookies as they are required for the service to work.</em></p>
+
+            <h3>4. Performance Cookies</h3>
+            <p>These cookies help us understand how visitors interact with Draxyl by collecting anonymous information:</p>
+            <ul>
+                <li>Pages visited and time spent on each page</li>
+                <li>Features used most frequently</li>
+                <li>Error messages encountered</li>
+                <li>Load times and performance metrics</li>
+            </ul>
+
+            <h3>5. Functional Cookies</h3>
+            <p>These cookies enable enhanced functionality and personalization:</p>
+            <ul>
+                <li>Language and region preferences</li>
+                <li>Dark/light theme settings</li>
+                <li>Recently used features</li>
+                <li>Chat notification preferences</li>
+                <li>Video call settings (camera, microphone defaults)</li>
+            </ul>
+
+            <h3>6. Marketing Cookies</h3>
+            <p>These cookies track your activity across websites to deliver targeted advertising:</p>
+            <ul>
+                <li>Record visits to our website</li>
+                <li>Track pages visited and links clicked</li>
+                <li>Build a profile of your interests</li>
+                <li>Limit the number of times you see an ad</li>
+            </ul>
+            <p><em>Marketing cookies are only used with your consent and for free-tier users.</em></p>
+
+            <h3>7. Third-Party Cookies</h3>
+            <p>We work with the following third-party services that may set cookies:</p>
+            <ul>
+                <li><strong>Google Analytics:</strong> Website analytics and performance</li>
+                <li><strong>Intercom:</strong> Customer support chat</li>
+                <li><strong>Stripe:</strong> Payment processing</li>
+                <li><strong>Cloudflare:</strong> Security and performance</li>
+            </ul>
+
+            <h3>8. Managing Cookies</h3>
+            <p>You have several options for managing cookies:</p>
+
+            <h4>8.1 Cookie Consent Tool</h4>
+            <p>Use our cookie consent banner to accept or reject non-essential cookies when you first visit.</p>
+
+            <h4>8.2 Browser Settings</h4>
+            <p>Most browsers allow you to:</p>
+            <ul>
+                <li>View cookies stored on your device</li>
+                <li>Delete some or all cookies</li>
+                <li>Block all or certain cookies</li>
+                <li>Set preferences for different websites</li>
+            </ul>
+
+            <h4>8.3 Browser-Specific Instructions</h4>
+            <ul>
+                <li><strong>Chrome:</strong> Settings → Privacy and Security → Cookies</li>
+                <li><strong>Firefox:</strong> Settings → Privacy & Security → Cookies</li>
+                <li><strong>Safari:</strong> Preferences → Privacy → Cookies</li>
+                <li><strong>Edge:</strong> Settings → Privacy → Cookies</li>
+            </ul>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Note:</strong> Disabling certain cookies may affect your experience and some features may not work properly.</p>
+            </div>
+
+            <h3>9. Similar Technologies</h3>
+            <p>In addition to cookies, we may use:</p>
+            <ul>
+                <li><strong>Local Storage:</strong> Store data locally in your browser</li>
+                <li><strong>Pixel Tags:</strong> Track email opens and website visits</li>
+                <li><strong>Web Beacons:</strong> Gather statistics about usage</li>
+                <li><strong>Device Fingerprinting:</strong> Identify devices for security (with consent)</li>
+            </ul>
+
+            <h3>10. Updates to This Policy</h3>
+            <p>We may update this Cookie Policy to reflect changes in technology, legislation, or our practices. Check this page periodically for updates.</p>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="legal-section" id="security">
+        <div class="container">
+            <h2 class="section-title"><span>🛡️</span> Security</h2>
+            <p class="last-updated">Last Updated: December 14, 2025</p>
+
+            <div class="highlight-box">
+                <p><strong>Our Promise:</strong> Security is at the core of everything we build. Draxyl employs industry-leading security measures to protect your data and communications.</p>
+            </div>
+
+            <h3>1. Security Overview</h3>
+            <p>Draxyl implements a comprehensive, multi-layered security approach to protect your organization's data. Our security program includes technical safeguards, organizational measures, and continuous monitoring.</p>
+
+            <div class="security-grid">
+                <div class="security-card">
+                    <div class="icon">🔐</div>
+                    <h4>End-to-End Encryption</h4>
+                    <p>Messages and calls protected with AES-256 encryption</p>
+                </div>
+                <div class="security-card">
+                    <div class="icon">🏢</div>
+                    <h4>Enterprise Grade</h4>
+                    <p>SOC 2 Type II and ISO 27001 certified infrastructure</p>
+                </div>
+                <div class="security-card">
+                    <div class="icon">👁️</div>
+                    <h4>24/7 Monitoring</h4>
+                    <p>Continuous threat detection and incident response</p>
+                </div>
+                <div class="security-card">
+                    <div class="icon">🔑</div>
+                    <h4>Access Controls</h4>
+                    <p>Multi-factor authentication and role-based permissions</p>
+                </div>
+                <div class="security-card">
+                    <div class="icon">💾</div>
+                    <h4>Data Backup</h4>
+                    <p>Redundant backups across multiple secure locations</p>
+                </div>
+                <div class="security-card">
+                    <div class="icon">✅</div>
+                    <h4>Compliance</h4>
+                    <p>GDPR, CCPA, HIPAA eligible, and more</p>
+                </div>
+            </div>
+
+            <h3>2. Data Encryption</h3>
+            <h4>2.1 Encryption in Transit</h4>
+            <p>All data transmitted between your device and Draxyl servers is protected using:</p>
+            <ul>
+                <li><strong>TLS 1.3:</strong> Latest transport layer security protocol</li>
+                <li><strong>Perfect Forward Secrecy:</strong> Unique session keys that can't be compromised retroactively</li>
+                <li><strong>Certificate Pinning:</strong> Prevents man-in-the-middle attacks on mobile apps</li>
+            </ul>
+
+            <h4>2.2 Encryption at Rest</h4>
+            <p>Data stored on our servers is encrypted using:</p>
+            <ul>
+                <li><strong>AES-256:</strong> Industry-standard symmetric encryption</li>
+                <li><strong>Key Management:</strong> Hardware Security Modules (HSMs) for key protection</li>
+                <li><strong>Database Encryption:</strong> Transparent data encryption for all databases</li>
+            </ul>
+
+            <h4>2.3 End-to-End Encryption (E2EE)</h4>
+            <p>For sensitive communications, optional E2EE ensures only you and your recipients can read messages:</p>
+            <ul>
+                <li>Messages encrypted on your device before transmission</li>
+                <li>Draxyl cannot access encrypted content</li>
+                <li>Available for 1:1 chats and small groups</li>
+            </ul>
+
+            <h3>3. Infrastructure Security</h3>
+            <h4>3.1 Data Centers</h4>
+            <ul>
+                <li>Tier 4 data centers with 99.995% uptime</li>
+                <li>Geographic redundancy across multiple regions</li>
+                <li>Physical security: biometric access, 24/7 guards, CCTV</li>
+                <li>Environmental controls: fire suppression, climate control</li>
+            </ul>
+
+            <h4>3.2 Network Security</h4>
+            <ul>
+                <li>DDoS protection and mitigation</li>
+                <li>Web Application Firewalls (WAF)</li>
+                <li>Intrusion Detection/Prevention Systems (IDS/IPS)</li>
+                <li>Network segmentation and isolation</li>
+            </ul>
+
+            <h3>4. Access Security</h3>
+            <h4>4.1 Authentication</h4>
+            <ul>
+                <li><strong>Multi-Factor Authentication (MFA):</strong> SMS, authenticator apps, hardware keys</li>
+                <li><strong>Single Sign-On (SSO):</strong> SAML 2.0 and OAuth 2.0 support</li>
+                <li><strong>Biometric Login:</strong> Fingerprint and face recognition on mobile</li>
+                <li><strong>Password Policies:</strong> Configurable complexity and rotation requirements</li>
+            </ul>
+
+            <h4>4.2 Authorization</h4>
+            <ul>
+                <li>Role-Based Access Control (RBAC)</li>
+                <li>Granular permissions at organization, team, and feature levels</li>
+                <li>Admin controls for data access and sharing</li>
+                <li>Audit logs for all administrative actions</li>
+            </ul>
+
+            <h3>5. Application Security</h3>
+            <h4>5.1 Secure Development</h4>
+            <ul>
+                <li>Security-focused Software Development Lifecycle (SDLC)</li>
+                <li>Regular code reviews and security assessments</li>
+                <li>Automated security testing in CI/CD pipeline</li>
+                <li>Dependency scanning for vulnerabilities</li>
+            </ul>
+
+            <h4>5.2 Vulnerability Management</h4>
+            <ul>
+                <li>Regular penetration testing by third parties</li>
+                <li>Bug bounty program for responsible disclosure</li>
+                <li>Rapid patching process for critical vulnerabilities</li>
+                <li>Continuous vulnerability scanning</li>
+            </ul>
+
+            <h3>6. Compliance & Certifications</h3>
+            <table>
+                <tr>
+                    <th>Standard</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>SOC 2 Type II</td>
+                    <td>Security, availability, and confidentiality controls</td>
+                    <td>✅ Certified</td>
+                </tr>
+                <tr>
+                    <td>ISO 27001</td>
+                    <td>Information security management</td>
+                    <td>✅ Certified</td>
+                </tr>
+                <tr>
+                    <td>GDPR</td>
+                    <td>EU data protection regulation</td>
+                    <td>✅ Compliant</td>
+                </tr>
+                <tr>
+                    <td>CCPA</td>
+                    <td>California consumer privacy</td>
+                    <td>✅ Compliant</td>
+                </tr>
+                <tr>
+                    <td>HIPAA</td>
+                    <td>Healthcare data protection (US)</td>
+                    <td>✅ Eligible</td>
+                </tr>
+                <tr>
+                    <td>CSA STAR</td>
+                    <td>Cloud security alliance</td>
+                    <td>✅ Level 2</td>
+                </tr>
+            </table>
+
+            <h3>7. Incident Response</h3>
+            <p>Our dedicated security team follows a structured incident response process:</p>
+            <ol>
+                <li><strong>Detection:</strong> Automated monitoring and alerting systems</li>
+                <li><strong>Triage:</strong> Rapid assessment and severity classification</li>
+                <li><strong>Containment:</strong> Isolate affected systems to prevent spread</li>
+                <li><strong>Eradication:</strong> Remove threat and patch vulnerabilities</li>
+                <li><strong>Recovery:</strong> Restore services and verify integrity</li>
+                <li><strong>Post-Incident:</strong> Analysis and improvement implementation</li>
+            </ol>
+
+            <div class="info-box">
+                <p><strong>Incident Notification:</strong> We will notify affected customers within 72 hours of confirming a security incident that impacts their data, in compliance with GDPR and other regulations.</p>
+            </div>
+
+            <h3>8. Security Best Practices for Users</h3>
+            <p>Help us keep your account secure by following these practices:</p>
+            <ul>
+                <li>✅ Enable Multi-Factor Authentication</li>
+                <li>✅ Use strong, unique passwords</li>
+                <li>✅ Keep your devices and apps updated</li>
+                <li>✅ Be cautious of phishing attempts</li>
+                <li>✅ Review connected apps regularly</li>
+                <li>✅ Report suspicious activity immediately</li>
+                <li>✅ Use secure networks, avoid public WiFi</li>
+                <li>✅ Lock your devices when not in use</li>
+            </ul>
+
+            <h3>9. Reporting Security Issues</h3>
+            <p>If you discover a security vulnerability, please report it responsibly:</p>
+            <ul>
+                <li><strong>Email:</strong> security@Draxyl-Presents.com</li>
+                <li><strong>Bug Bounty:</strong> Submit through our bug bounty program</li>
+                <li><strong>PGP Key:</strong> Available for encrypted communications</li>
+            </ul>
+            <p>We appreciate security researchers and offer rewards for valid reports.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <h2>Questions About Our Policies?</h2>
+        <p>Our legal and privacy team is here to help. Contact us for any questions or concerns about our policies.</p>
+        <div class="contact-info">
+            <div class="contact-item">
+                <div class="icon">📧</div>
+                <h4>Email</h4>
+                <p>legal@Draxyl-Presents.com</p>
+            </div>
+            <div class="contact-item">
+                <div class="icon">🔒</div>
+                <h4>Privacy Inquiries</h4>
+                <p>privacy@Draxyl-Presents.com</p>
+            </div>
+            <div class="contact-item">
+                <div class="icon">🛡️</div>
+                <h4>Security Reports</h4>
+                <p>security@Draxyl-Presents.com</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Draxyl by Draxyl-Presents. All rights reserved.</p>
+        <p style="margin-top: 10px;"><a href="Draxyl-website.html">Back to Home</a> | <a href="Draxyl-app.html">Download App</a> | <a href="ding_ding.html">All Apps</a></p>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#top" class="back-to-top">↑</a>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 500) {
+                backToTop.style.opacity = '1';
+                backToTop.style.visibility = 'visible';
+            } else {
+                backToTop.style.opacity = '0';
+                backToTop.style.visibility = 'hidden';
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+

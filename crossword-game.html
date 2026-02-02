@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Crossword Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f4f8 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .crossword-container {
+            max-width: 540px;
+            margin: 32px auto;
+            background: #fff;
+            padding: 20px 12px 18px 12px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(60, 80, 180, 0.12), 0 1.5px 6px rgba(0,0,0,0.07);
+            border: 1.5px solid #e3e8f0;
+        }
+        h2 {
+            text-align: center;
+            color: #2d3a5a;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+            font-size: 1.5em;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            background: #f8fafc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px #e0e7ff;
+        }
+        td {
+            width: 32px;
+            height: 32px;
+            border: 1.2px solid #b6c2e1;
+            text-align: center;
+            position: relative;
+            background: #f4f7fb;
+            transition: background 0.2s;
+        }
+        td[style*='background: #333'] {
+            background: #2d3a5a !important;
+            border: none;
+        }
+        input[type="text"] {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 1.1em;
+            background: transparent;
+            outline: none;
+            color: #2d3a5a;
+            font-weight: 600;
+            transition: background 0.2s, box-shadow 0.2s;
+            border-radius: 4px;
+        }
+        input[type="text"]:focus {
+            background: #e0e7ff;
+            box-shadow: 0 0 0 2px #7faaff;
+        }
+        .clues {
+            margin-top: 20px;
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+        }
+        .clues h3 {
+            margin-bottom: 8px;
+            color: #3b4a6b;
+            font-size: 1.1em;
+            letter-spacing: 0.5px;
+        }
+        .clues ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .clues li {
+            margin-bottom: 8px;
+            color: #2d3a5a;
+            font-size: 1em;
+            padding-left: 2px;
+        }
+        .correct {
+            background: #d1f7c4 !important;
+            color: #1b4d1b !important;
+            border: 1.5px solid #7ed957 !important;
+        }
+        .wrong {
+            background: #ffe0e0 !important;
+            color: #a12a2a !important;
+            border: 1.5px solid #ff6b6b !important;
+        }
+        .button {
+            margin: 24px auto 0 auto;
+            display: block;
+            padding: 10px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #4f8cff 0%, #1e3a8a 100%);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #e0e7ff;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .button:hover {
+            background: linear-gradient(90deg, #1e3a8a 0%, #4f8cff 100%);
+            box-shadow: 0 4px 16px #b6c2e1;
+        }
+        @media (max-width: 600px) {
+            .crossword-container {
+                padding: 8px 1vw 12px 1vw;
+                max-width: 98vw;
+            }
+            table td {
+                width: 24px;
+                height: 24px;
+            }
+            h2 {
+                font-size: 1em;
+            }
+            .clues {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .clues h3 {
+                font-size: 1em;
+            }
+            .clues li {
+                font-size: 0.9em;
+            }
+            .button {
+                font-size: 0.9em;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="crossword-container">
+        <h2>Mini Crossword Game</h2>
+        <table id="crossword">
+            <!-- Crossword grid will be generated here -->
+        </table>
+        <div class="clues">
+            <h3>Across</h3>
+            <ul id="across-clues"></ul>
+            <h3>Down</h3>
+            <ul id="down-clues"></ul>
+        </div>
+        <button class="button" onclick="checkAnswers()">Check Answers</button>
+    </div>
+    <script>
+        // Define a dense 10x10 crossword structure with maximum intersecting words
+        const crossword = [
+            ['C','A','T','S','E','A','R','T','S','Y'],
+            ['O','P','E','N','E','R','A','S','E','A'],
+            ['M','O','O','N','E','Y','E','S','E','E'],
+            ['P','E','A','C','H','E','S','E','A','T'],
+            ['U','N','I','T','E','D','E','A','R','S'],
+            ['T','E','A','C','H','E','R','S','E','A'],
+            ['E','A','R','T','H','E','A','S','E','L'],
+            ['R','A','T','S','E','A','S','O','N','S'],
+            ['S','E','A','S','O','N','S','E','A','S'],
+            ['Y','E','A','R','S','E','A','S','E','A'],
+        ];
+        // Clues for as many words as possible (across and down)
+        const clues = {
+            across: [
+                { num: 1, clue: 'Furry pets', row: 0, col: 0, answer: 'CATS' },
+                { num: 2, clue: 'A work of ___', row: 0, col: 5, answer: 'ARTSY' },
+                { num: 3, clue: 'To make available', row: 1, col: 0, answer: 'OPENER' },
+                { num: 4, clue: 'Natural satellite', row: 2, col: 1, answer: 'MOON' },
+                { num: 5, clue: 'Fruit', row: 3, col: 1, answer: 'PEACHES' },
+                { num: 6, clue: 'Joined together', row: 4, col: 1, answer: 'UNITED' },
+                { num: 7, clue: 'Instructors', row: 5, col: 1, answer: 'TEACHERS' },
+                { num: 8, clue: 'Our planet', row: 6, col: 0, answer: 'EARTH' },
+                { num: 9, clue: 'Reason', row: 7, col: 5, answer: 'SEASONS' },
+                { num: 10, clue: 'Time periods', row: 8, col: 1, answer: 'SEASONS' },
+                { num: 11, clue: 'Calendar units', row: 9, col: 1, answer: 'YEARS' },
+            ],
+            down: [
+                { num: 12, clue: 'Opposite of closed', row: 0, col: 1, answer: 'OPEN' },
+                { num: 13, clue: 'Body part to see', row: 0, col: 6, answer: 'EARS' },
+                { num: 14, clue: 'Fruit (plural)', row: 0, col: 3, answer: 'SEAS' },
+                { num: 15, clue: 'To instruct', row: 0, col: 5, answer: 'TEACH' },
+                { num: 16, clue: 'Planet', row: 0, col: 7, answer: 'EARTH' },
+                { num: 17, clue: 'Time of year', row: 0, col: 8, answer: 'SEASON' },
+                { num: 18, clue: 'Years', row: 0, col: 9, answer: 'YEAR' },
+            ]
+        };
+        // Helper: Find clue numbers for each cell
+        function getClueNumbers() {
+            const numbers = Array.from({ length: crossword.length }, () => Array(crossword[0].length).fill(null));
+            let num = 1;
+            // Mark cells that start an across or down word
+            for (let r = 0; r < crossword.length; r++) {
+                for (let c = 0; c < crossword[r].length; c++) {
+                    if (!crossword[r][c]) continue;
+                    let isStart = false;
+                    // Across start
+                    if ((c === 0 || !crossword[r][c - 1]) && c + 1 < crossword[r].length && crossword[r][c + 1]) {
+                        isStart = true;
+                    }
+                    // Down start
+                    if ((r === 0 || !crossword[r - 1][c]) && r + 1 < crossword.length && crossword[r + 1][c]) {
+                        isStart = true;
+                    }
+                    if (isStart) {
+                        numbers[r][c] = num++;
+                    }
+                }
+            }
+            return numbers;
+        }
+
+        // Generate grid with clue numbers
+        const table = document.getElementById('crossword');
+        const clueNumbers = getClueNumbers();
+        for (let r = 0; r < crossword.length; r++) {
+            const tr = document.createElement('tr');
+            for (let c = 0; c < crossword[r].length; c++) {
+                const td = document.createElement('td');
+                if (crossword[r][c]) {
+                    // Add clue number if present
+                    if (clueNumbers[r][c]) {
+                        const numDiv = document.createElement('div');
+                        numDiv.textContent = clueNumbers[r][c];
+                        numDiv.style.position = 'absolute';
+                        numDiv.style.top = '2px';
+                        numDiv.style.left = '3px';
+                        numDiv.style.fontSize = '0.65em';
+                        numDiv.style.color = '#3b4a6b';
+                        numDiv.style.fontWeight = 'bold';
+                        td.appendChild(numDiv);
+                    }
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.maxLength = 1;
+                    input.dataset.row = r;
+                    input.dataset.col = c;
+                    td.style.position = 'relative';
+                    td.appendChild(input);
+                } else {
+                    td.style.background = '#333';
+                }
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+        // Render clues
+        function renderClues() {
+            const across = document.getElementById('across-clues');
+            const down = document.getElementById('down-clues');
+            clues.across.forEach(clue => {
+                const li = document.createElement('li');
+                li.textContent = `${clue.num}. ${clue.clue}`;
+                across.appendChild(li);
+            });
+            clues.down.forEach(clue => {
+                const li = document.createElement('li');
+                li.textContent = `${clue.num}. ${clue.clue}`;
+                down.appendChild(li);
+            });
+        }
+        renderClues();
+        // Check answers
+        function checkAnswers() {
+            // Clear previous highlights
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.classList.remove('correct', 'wrong');
+            });
+            // Check across
+            clues.across.forEach(clue => {
+                let correct = true;
+                for (let i = 0; i < clue.answer.length; i++) {
+                    const input = document.querySelector(`input[data-row='${clue.row}'][data-col='${clue.col + i}']`);
+                    if (input && input.value.toUpperCase() !== clue.answer[i]) {
+                        correct = false;
+                        input.classList.add('wrong');
+                    } else if (input) {
+                        input.classList.add('correct');
+                    }
+                }
+            });
+            // Check down
+            clues.down.forEach(clue => {
+                let correct = true;
+                for (let i = 0; i < clue.answer.length; i++) {
+                    const input = document.querySelector(`input[data-row='${clue.row + i}'][data-col='${clue.col}']`);
+                    if (input && input.value.toUpperCase() !== clue.answer[i]) {
+                        correct = false;
+                        input.classList.add('wrong');
+                    } else if (input) {
+                        input.classList.add('correct');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

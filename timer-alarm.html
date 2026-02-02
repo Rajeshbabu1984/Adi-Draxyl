@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer & Alarm App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00d9ff;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00d9ff, #0077ff);
+            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Timer Styles */
+        .timer-display {
+            text-align: center;
+            font-size: 4rem;
+            color: #fff;
+            font-weight: bold;
+            margin: 30px 0;
+            text-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .timer-inputs input {
+            width: 70px;
+            padding: 12px;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .timer-inputs input:focus {
+            outline: none;
+            border-color: #00d9ff;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .timer-inputs label {
+            color: #aaa;
+            font-size: 0.8rem;
+            display: block;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+        }
+
+        .btn-start:hover {
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-pause {
+            background: linear-gradient(135deg, #ffaa00, #ff8800);
+            color: #000;
+        }
+
+        .btn-pause:hover {
+            box-shadow: 0 5px 20px rgba(255, 170, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #fff;
+        }
+
+        .btn-reset:hover {
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Alarm Styles */
+        .alarm-input {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .alarm-input input {
+            padding: 15px 25px;
+            font-size: 2rem;
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-align: center;
+        }
+
+        .alarm-input input:focus {
+            outline: none;
+            border-color: #00d9ff;
+        }
+
+        .current-time {
+            text-align: center;
+            font-size: 3rem;
+            color: #00d9ff;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .alarm-status {
+            text-align: center;
+            color: #aaa;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .alarm-status.active {
+            color: #00ff88;
+        }
+
+        .alarms-list {
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .alarm-item span {
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .alarm-item button {
+            background: #ff4444;
+            border: none;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Alert Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .alerting {
+            animation: shake 0.3s infinite;
+            background: linear-gradient(135deg, #ff4444, #ff0000) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <h1>⏰ Timer & Alarm</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('timer')">⏱️ Timer</button>
+            <button class="tab-btn" onclick="showTab('alarm')">🔔 Alarm</button>
+        </div>
+
+        <!-- Timer Tab -->
+        <div id="timer" class="tab-content active">
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            
+            <div class="timer-inputs">
+                <div>
+                    <input type="number" id="hours" min="0" max="99" value="0">
+                    <label>Hours</label>
+                </div>
+                <div>
+                    <input type="number" id="minutes" min="0" max="59" value="5">
+                    <label>Minutes</label>
+                </div>
+                <div>
+                    <input type="number" id="seconds" min="0" max="59" value="0">
+                    <label>Seconds</label>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-start" id="timerStartBtn" onclick="startTimer()">Start</button>
+                <button class="btn btn-pause" onclick="pauseTimer()">Pause</button>
+                <button class="btn btn-reset" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+
+        <!-- Alarm Tab -->
+        <div id="alarm" class="tab-content">
+            <div class="current-time" id="currentTime">00:00:00</div>
+            
+            <div class="alarm-input">
+                <input type="time" id="alarmTime">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-start" onclick="setAlarm()">Set Alarm</button>
+                <button class="btn btn-reset" onclick="stopAlarm()">Stop Alarm</button>
+            </div>
+
+            <div class="alarm-status" id="alarmStatus">No alarm set</div>
+
+            <div class="alarms-list" id="alarmsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Timer Variables
+        let timerInterval = null;
+        let totalSeconds = 0;
+        let isRunning = false;
+
+        // Alarm Variables
+        let alarms = [];
+        let alarmCheckInterval = null;
+        let alarmAudio = null;
+
+        // Tab Switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Timer Functions
+        function startTimer() {
+            if (isRunning) return;
+            
+            if (totalSeconds === 0) {
+                const hours = parseInt(document.getElementById('hours').value) || 0;
+                const minutes = parseInt(document.getElementById('minutes').value) || 0;
+                const seconds = parseInt(document.getElementById('seconds').value) || 0;
+                totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            }
+
+            if (totalSeconds <= 0) return;
+
+            isRunning = true;
+            document.getElementById('timerStartBtn').textContent = 'Running...';
+
+            timerInterval = setInterval(() => {
+                totalSeconds--;
+                updateTimerDisplay();
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    document.getElementById('timerStartBtn').textContent = 'Start';
+                    triggerAlert('Timer');
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById('timerStartBtn').textContent = 'Start';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            totalSeconds = 0;
+            document.getElementById('timerStartBtn').textContent = 'Start';
+            document.getElementById('timerDisplay').textContent = '00:00:00';
+            document.getElementById('mainContainer').classList.remove('alerting');
+        }
+
+        function updateTimerDisplay() {
+            const hrs = Math.floor(totalSeconds / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Alarm Functions
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+
+        function setAlarm() {
+            const alarmTime = document.getElementById('alarmTime').value;
+            if (!alarmTime) {
+                alert('Please select a time!');
+                return;
+            }
+
+            if (!alarms.includes(alarmTime)) {
+                alarms.push(alarmTime);
+                updateAlarmsList();
+                document.getElementById('alarmStatus').textContent = `Alarm set for ${alarmTime}`;
+                document.getElementById('alarmStatus').classList.add('active');
+            }
+        }
+
+        function updateAlarmsList() {
+            const list = document.getElementById('alarmsList');
+            list.innerHTML = alarms.map((time, index) => `
+                <div class="alarm-item">
+                    <span>🔔 ${time}</span>
+                    <button onclick="removeAlarm(${index})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function removeAlarm(index) {
+            alarms.splice(index, 1);
+            updateAlarmsList();
+            if (alarms.length === 0) {
+                document.getElementById('alarmStatus').textContent = 'No alarm set';
+                document.getElementById('alarmStatus').classList.remove('active');
+            }
+        }
+
+        function checkAlarms() {
+            const now = new Date();
+            const currentTime = now.toTimeString().slice(0, 5);
+            
+            alarms.forEach((alarmTime, index) => {
+                if (currentTime === alarmTime) {
+                    triggerAlert('Alarm');
+                    removeAlarm(index);
+                }
+            });
+        }
+
+        function stopAlarm() {
+            document.getElementById('mainContainer').classList.remove('alerting');
+            if (alarmAudio) {
+                alarmAudio.pause();
+                alarmAudio = null;
+            }
+        }
+
+        function triggerAlert(type) {
+            document.getElementById('mainContainer').classList.add('alerting');
+            
+            // Play sound using Web Audio API
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.3;
+                
+                oscillator.start();
+                
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 3000);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+
+            alert(`⏰ ${type} finished!`);
+            stopAlarm();
+        }
+
+        // Initialize
+        setInterval(updateCurrentTime, 1000);
+        setInterval(checkAlarms, 1000);
+        updateCurrentTime();
+    </script>
+</body>
+</html>

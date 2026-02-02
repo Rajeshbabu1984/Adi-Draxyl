@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draxyl Admin - User Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #444444 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: #000000;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #FFFFFF;
+            font-size: 1.1rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #000000;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+        
+        .users-table {
+            background: #000000;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 20px 30px;
+            background: linear-gradient(90deg, #000000 0%, #444444 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .refresh-btn {
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 15px 30px;
+            text-align: left;
+            font-weight: 600;
+            color: #FFFFFF;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        td {
+            padding: 15px 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .user-id {
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+        
+        .user-name {
+            font-weight: 500;
+            color: #FFFFFF;
+        }
+        
+        .user-email {
+            color: #FFFFFF;
+        }
+        
+        .user-date {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #FFFFFF;
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 30px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Draxyl Admin Panel</h1>
+            <p>User Management Dashboard</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="number" id="totalUsers">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Latest Sign-up</h3>
+                <div class="number" style="font-size:1.2rem;" id="latestUser">-</div>
+            </div>
+        </div>
+        
+        <div class="users-table">
+            <div class="table-header">
+                <h2>Registered Users</h2>
+                <button class="refresh-btn" onclick="loadUsers()">🔄 Refresh</button>
+            </div>
+            
+            <div id="tableContent">
+                <div class="loading">Loading users...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check if user is logged in on page load
+        function checkAuthentication() {
+            const token = localStorage.getItem('draxyl_token');
+            const user = localStorage.getItem('draxylUser');
+            
+            if (!token || !user) {
+                alert('🔒 You need to be logged in to access the admin panel!');
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        async function deleteUser(email, name) {
+            const confirmed = confirm(`⚠️ Are you sure you want to delete the account for ${name} (${email})?\n\nThis action cannot be undone!`);
+            if (!confirmed) return;
+            
+            // Check if deleting own account
+            const currentUser = JSON.parse(localStorage.getItem('draxylUser'));
+            const isDeletingSelf = currentUser && currentUser.email === email;
+            
+            try {
+                const token = localStorage.getItem('draxyl_token');
+                
+                if (!token) {
+                    alert('🔒 Authentication required. Please log in again.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const response = await fetch('https://gdllgvlk-5000.inc1.devtunnels.ms/api/admin/delete-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 401 || response.status === 403) {
+                    alert('🔒 Session expired. Please log in again.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                if (data.success) {
+                    if (isDeletingSelf) {
+                        // Deleting own account
+                        localStorage.clear();
+                        alert('⚠️ Your account has been terminated.');
+                        window.location.href = 'draxyl-web.html';
+                    } else {
+                        // Deleting someone else's account
+                        alert('Account deleted successfully!');
+                        loadUsers();
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('❌ Error connecting to backend server.\n\nMake sure:\n1. Flask backend is running (python app.py)\n2. Server is running on https://gdllgvlk-5000.inc1.devtunnels.ms\n3. Check the terminal for any errors');
+            }
+        }
+        
+        async function loadUsers() {
+            const tableContent = document.getElementById('tableContent');
+            const totalUsersEl = document.getElementById('totalUsers');
+            const latestUserEl = document.getElementById('latestUser');
+            
+            tableContent.innerHTML = '<div class="loading">Loading users...</div>';
+            
+            try {
+                // Get JWT token from localStorage
+                const token = localStorage.getItem('draxyl_token');
+                
+                if (!token) {
+                    tableContent.innerHTML = `
+                        <div class="error">
+                            <strong>🔒 Authentication Required</strong><br>
+                            You need to be logged in to view this page.
+                            <br><br>
+                            <a href="login.html" style="color: #FFFFFF; text-decoration: underline;">Go to Login</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                };
+                
+                const response = await fetch('https://gdllgvlk-5000.inc1.devtunnels.ms/api/users', {
+                    method: 'GET',
+                    headers: headers
+                });
+                
+                if (response.status === 401 || response.status === 403) {
+                    tableContent.innerHTML = `
+                        <div class="error">
+                            <strong>🔒 Session Expired</strong><br>
+                            Your session has expired. Please log in again.
+                            <br><br>
+                            <a href="login.html" style="color: #FFFFFF; text-decoration: underline;">Go to Login</a>
+                        </div>
+                    `;
+                    localStorage.clear();
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.users.length > 0) {
+                    totalUsersEl.textContent = data.total;
+                    latestUserEl.textContent = data.users[0].name;
+                    
+                    let tableHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.users.forEach(user => {
+                        const date = new Date(user.created_at);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                        
+                        tableHTML += `
+                            <tr>
+                                <td class="user-id">${user.id}</td>
+                                <td class="user-name">${user.name}</td>
+                                <td class="user-email">${user.email}</td>
+                                <td class="user-date">${formattedDate}</td>
+                                <td><button class="delete-btn" onclick="deleteUser('${user.email}', '${user.name}')">Delete</button></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    tableContent.innerHTML = tableHTML;
+                } else {
+                    totalUsersEl.textContent = '0';
+                    latestUserEl.textContent = 'None';
+                    tableContent.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <h3>No users yet</h3>
+                            <p>Users will appear here once they sign up</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Backend connection error:', error);
+                tableContent.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Backend Connection Error</strong><br><br>
+                        Unable to connect to the backend server.
+                        <br><br>
+                        <strong>Troubleshooting steps:</strong><br>
+                        1️⃣ Make sure Flask backend is running<br>
+                        2️⃣ Run: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">python app.py</code> in terminal<br>
+                        3️⃣ Check server is on https://gdllgvlk-5000.inc1.devtunnels.ms<br>
+                        4️⃣ Check terminal for error messages<br>
+                        5️⃣ Verify CORS is enabled in Flask
+                    </div>
+                `;
+                totalUsersEl.textContent = '❌';
+                latestUserEl.textContent = 'Error';
+            }
+        }
+        
+        // Check authentication before loading
+        if (checkAuthentication()) {
+            // Load users on page load
+            loadUsers();
+            
+            // Auto-refresh every 10 seconds
+            setInterval(loadUsers, 10000);
+        }
+    </script>
+</body>
+</html>
+
+
+

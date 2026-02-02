@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draxyl - Company, Careers, Blog & Press</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #FFFFFF;
+            background: #f8f9ff;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #FFFFFF;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FFFFFF;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white !important;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 150px 20px 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="2.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 100px 100px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, #333333);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        .hero-stat .label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Quick Links */
+        .quick-links {
+            background: #000000;
+            padding: 30px 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+        }
+
+        .quick-links-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            padding: 15px 30px;
+            background: #1a1a1a;
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-link:hover {
+            background: #000000;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(51, 112, 255, 0.3);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 100px 20px;
+        }
+
+        .section-white {
+            background: #000000;
+        }
+
+        .section-gray {
+            background: #f8f9ff;
+        }
+
+        .section-dark {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+        }
+
+        .section-dark .section-title {
+            color: white;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        .section-dark .section-subtitle {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* ========== ABOUT SECTION ========== */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-content h3 {
+            font-size: 1.8rem;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .about-content p {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .about-image {
+            text-align: center;
+            font-size: 15rem;
+        }
+
+        .timeline {
+            margin-top: 60px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .timeline-year {
+            min-width: 100px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        .timeline-content {
+            background: #000000;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            flex: 1;
+        }
+
+        .timeline-content h4 {
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content p {
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        /* Values */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .value-card {
+            background: #000000;
+            padding: 40px 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .value-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .value-card h4 {
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .value-card p {
+            color: #FFFFFF;
+            font-size: 0.95rem;
+        }
+
+        /* ========== CAREERS SECTION ========== */
+        .careers-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+
+        .careers-intro p {
+            font-size: 1.1rem;
+            color: #FFFFFF;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .benefit-card {
+            background: linear-gradient(135deg, #1a1a1a, #e6edff);
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card h4 {
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .benefit-card p {
+            color: #FFFFFF;
+            font-size: 0.9rem;
+        }
+
+        /* Job Listings */
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .jobs-header h3 {
+            font-size: 2rem;
+            color: #FFFFFF;
+        }
+
+        .job-filters {
+            display: flex;
+            gap: 15px;
+        }
+
+        .job-filter {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            background: #000000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .job-filter:hover, .job-filter.active {
+            border-color: #FFFFFF;
+            background: #1a1a1a;
+            color: #FFFFFF;
+        }
+
+        .job-card {
+            background: #000000;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .job-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(51, 112, 255, 0.15);
+        }
+
+        .job-info h4 {
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .job-meta span {
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .job-apply {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .job-apply:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(51, 112, 255, 0.4);
+        }
+
+        /* ========== BLOG SECTION ========== */
+        .blog-featured {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .blog-card {
+            background: #000000;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .blog-image {
+            height: 250px;
+            background: linear-gradient(135deg, #000000, #333333);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .blog-card.featured .blog-image {
+            height: 350px;
+            font-size: 8rem;
+        }
+
+        .blog-content {
+            padding: 30px;
+        }
+
+        .blog-category {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #FFFFFF;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .blog-content h3 {
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .blog-card.featured .blog-content h3 {
+            font-size: 1.8rem;
+        }
+
+        .blog-content p {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .blog-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #000000, #333333);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .blog-grid .blog-image {
+            height: 180px;
+            font-size: 4rem;
+        }
+
+        .blog-grid .blog-content h3 {
+            font-size: 1.2rem;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .load-more-btn {
+            padding: 15px 40px;
+            background: #000000;
+            color: #FFFFFF;
+            border: 2px solid #000000;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            background: #000000;
+            color: white;
+        }
+
+        /* ========== PRESS SECTION ========== */
+        .press-kit {
+            background: linear-gradient(135deg, #000000, #333333);
+            border-radius: 30px;
+            padding: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            color: white;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .press-kit-content h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .press-kit-content p {
+            opacity: 0.9;
+            max-width: 500px;
+        }
+
+        .press-kit-btn {
+            padding: 15px 35px;
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .press-kit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .press-releases h3 {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 30px;
+        }
+
+        .press-card {
+            background: #000000;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            transition: transform 0.3s ease;
+        }
+
+        .press-card:hover {
+            transform: translateX(10px);
+        }
+
+        .press-date {
+            min-width: 80px;
+            text-align: center;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .press-date .day {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            display: block;
+        }
+
+        .press-date .month {
+            font-size: 0.9rem;
+            color: #FFFFFF;
+        }
+
+        .press-info h4 {
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .press-info p {
+            color: #FFFFFF;
+            margin-bottom: 15px;
+        }
+
+        .press-link {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .press-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Media Coverage */
+        .media-logos {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+            padding: 40px;
+            background: #000000;
+            border-radius: 20px;
+        }
+
+        .media-logo {
+            font-size: 2rem;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .media-logo:hover {
+            color: #FFFFFF;
+        }
+
+        /* Contact Press */
+        .press-contact {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .press-contact h4 {
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .press-contact p {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .press-email {
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .press-email:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== LEADERSHIP SECTION ========== */
+        .leadership-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .leader-card {
+            background: #000000;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .leader-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .leader-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #000000, #333333);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .leader-card h4 {
+            font-size: 1.2rem;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .leader-card .role {
+            color: #FFFFFF;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .leader-card p {
+            color: #FFFFFF;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+
+        .footer h4 {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer ul {
+            list-style: none;
+        }
+
+        .footer li {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #FFFFFF;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(51, 112, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .values-grid, .leadership-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .blog-featured {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-image {
+                font-size: 10rem;
+            }
+
+            .benefits-grid, .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .values-grid, .leadership-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .job-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .press-kit {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .press-card {
+                flex-direction: column;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="Draxyl-website.html" class="logo">💬 Draxyl</a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#careers">Careers</a>
+                <a href="#blog">Blog</a>
+                <a href="#press">Press</a>
+                <a href="Draxyl-website.html" class="back-btn">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="top">
+        <div class="hero-content">
+            <h1>🏢 About Draxyl</h1>
+            <p>We're on a mission to transform how the world works. Built by a single passionate developer at Draxyl-Presents, we're finalizing the vision in 2025 and preparing for development!</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="number">2025</span>
+                    <span class="label">Founded</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">Launch</span>
+                    <span class="label">Coming Soon</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">Development</span>
+                    <span class="label">Current Phase</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">∞</span>
+                    <span class="label">Possibilities</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <div class="quick-links-container">
+            <a href="#about" class="quick-link">🏢 About Us</a>
+            <a href="#careers" class="quick-link">💼 Careers</a>
+            <a href="#blog" class="quick-link">📝 Blog</a>
+            <a href="#press" class="quick-link">📰 Press</a>
+            <a href="#leadership" class="quick-link">👥 Leadership</a>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="section section-white" id="about">
+        <div class="container">
+            <h2 class="section-title">Our Story</h2>
+            <p class="section-subtitle">From a simple idea to transforming how millions work every day</p>
+
+            <div class="about-grid">
+                <div class="about-content">
+                    <h3>Who We Are</h3>
+                    <p>Draxyl is a comprehensive workplace communication and collaboration platform currently being developed by a <strong>single passionate developer</strong> at <strong>Draxyl-Presents</strong>. We're planning development to begin in 2026 and preparing for our official public release in 2027!</p>
+                    <p>Our platform will combine instant messaging, video conferencing, task management, file sharing, and workflow automation into a seamless experience that helps teams work smarter, not harder.</p>
+                    <h3>Our Mission</h3>
+                    <p>To make work more efficient, enjoyable, and accessible for everyone. We believe that great communication is the foundation of successful teams, and we're committed to building tools that bring people together, no matter where they are.</p>
+                    <h3>Our Vision</h3>
+                    <p>A world where distance doesn't limit collaboration, where every team has access to enterprise-grade tools, and where technology empowers people to do their best work.</p>
+                </div>
+                <div class="about-image">
+                    💬
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline">
+                <h3 style="text-align: center; font-size: 2rem; margin-bottom: 40px; color: #FFFFFF;">Our Journey</h3>
+                <div class="timeline-item">
+                    <div class="timeline-year">2025</div>
+                    <div class="timeline-content">
+                        <h4>💡 The Idea is Born</h4>
+                        <p>Draxyl-Presents begins developing Draxyl with a vision to revolutionize workplace communication. The focus: simple, reliable, AI-powered messaging for teams.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Q1 2025</div>
+                    <div class="timeline-content">
+                        <h4>🔧 Development Begins</h4>
+                        <p>Core features are being built: messaging, video conferencing, task management, and file sharing. Our talented team works tirelessly on the foundation.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Q2 2025</div>
+                    <div class="timeline-content">
+                        <h4>🤖 AI Integration</h4>
+                        <p>Integration of AI-powered features including smart scheduling, automated responses, and an intelligent assistant. Making Draxyl smarter than ever.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Q3 2026</div>
+                    <div class="timeline-content">
+                        <h4>🧪 Beta Testing</h4>
+                        <p>Internal testing and refinement are to be scheduled on 2026.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Q4 2026</div>
+                    <div class="timeline-content">
+                        <h4>🚀 Finalizing for Launch</h4>
+                        <p>Final preparations are going to be underway. Bug fixes, performance optimization, and preparation for our grand public release.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Q5 2026</div>
+                    <div class="timeline-content">
+                        <h4>🎯 Official Launch & Beyond</h4>
+                        <p>Coming March - August 2026! Draxyl will be publicly available. Join us on this exciting journey as we transform how teams collaborate worldwide.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Values -->
+            <h3 style="text-align: center; font-size: 2rem; margin: 80px 0 20px; color: #FFFFFF;">Our Core Values</h3>
+            <p style="text-align: center; color: #FFFFFF; margin-bottom: 40px;">The principles that guide everything we do</p>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🎯</div>
+                    <h4>Simplicity</h4>
+                    <p>Powerful features that anyone can use. We believe the best tools are the ones that get out of your way.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔒</div>
+                    <h4>Security</h4>
+                    <p>Your data protection is our priority. Military-grade security for everyone, from startups to corporations.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🚀</div>
+                    <h4>Innovation</h4>
+                    <p>Constantly improving and evolving. We're never satisfied with "good enough" – we aim for great.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h4>Reliability</h4>
+                    <p>99.99% uptime guarantee. When you need us, we're there. Always.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leadership Section -->
+    <section class="section section-gray" id="leadership">
+        <div class="container">
+            <h2 class="section-title">Our Leadership</h2>
+            <p class="section-subtitle">Meet the team driving Draxyl's vision forward</p>
+
+            <div class="leadership-grid">
+                <div class="leader-card">
+                    <div class="leader-avatar">👨‍💼</div>
+                    <h4>Adithya. R</h4>
+                    <p class="role">CEO & Founder</p>
+                    <p>Visionary leader. Passionate about transforming workplace collaboration.</p>
+                </div>
+                <div class="leader-card">
+                    <div class="leader-avatar">👩‍💻</div>
+                    <h4>Hiring</h4>
+                    <p class="role">CTO</p>
+                    <p>Update when hired!</p>
+                </div>
+                <div class="leader-card">
+                    <div class="leader-avatar">👨‍🎨</div>
+                    <h4>Hiring</h4>
+                    <p class="role">Chief Design Officer</p>
+                    <p>Update when hired!</p>
+                </div>
+                <div class="leader-card">
+                    <div class="leader-avatar">👩‍💼</div>
+                    <h4>Hiring</h4>
+                    <p class="role">COO</p>
+                    <p>Update when hired!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Careers Section -->
+    <section class="section section-white" id="careers">
+        <div class="container">
+            <h2 class="section-title">Join Our Team</h2>
+            <p class="section-subtitle">Help us build the future of work</p>
+
+            <div class="careers-intro">
+                <p>At Draxyl-Presents, we're looking for passionate people who want to make a difference. We offer competitive salaries, amazing benefits, and the chance to work on products used by millions. Whether you're an engineer, designer, marketer, or anything in between – there's a place for you here.</p>
+            </div>
+
+            <!-- Benefits -->
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h4>Competitive Salary</h4>
+                    <p>Top-of-market compensation with annual reviews and performance bonuses.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🏠</div>
+                    <h4>Remote Friendly</h4>
+                    <p>Work from anywhere. We trust our team to deliver, wherever they are.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🏥</div>
+                    <h4>Health & Wellness</h4>
+                    <p>Comprehensive health insurance, mental health support, and gym memberships.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📚</div>
+                    <h4>Learning Budget</h4>
+                    <p>$2,000 annual budget for courses, conferences, and professional development.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🌴</div>
+                    <h4>Unlimited PTO</h4>
+                    <p>Take the time you need. We believe rested employees are productive employees.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h4>Stock Options</h4>
+                    <p>Own a piece of Draxyl. All employees receive equity grants.</p>
+                </div>
+            </div>
+
+            <!-- Coming Soon Notice -->
+            <div style="text-align: center; padding: 40px; background: #1a1a1a; border-radius: 20px; margin-top: 20px;">
+                <h3 style="color: #FFFFFF; margin-bottom: 10px;">🚀 Positions Coming Soon!</h3>
+                <p style="color: #FFFFFF;">We're currently a solo developer operation, but as Draxyl grows, we'll be looking for talented people to join our mission. Check back after our 2027 launch!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="section section-gray" id="blog">
+        <div class="container">
+            <h2 class="section-title">Draxyl Blog</h2>
+            <p class="section-subtitle">Development updates, insights, and stories from our team</p>
+
+            <!-- Featured Posts -->
+            <div class="blog-featured">
+                <div class="blog-card featured">
+                    <div class="blog-image">🤖</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Development Update</span>
+                        <h3>Building Draxyl AI: A Sneak Peek at Our Intelligent Assistant</h3>
+                        <p>We're excited to share progress on Draxyl AI, one of our most ambitious features. Powered by cutting-edge machine learning, it will help you schedule meetings, summarize conversations, and even draft messages when we launch...</p>
+                        <div class="blog-meta">
+                            <div class="blog-author">
+                                <div class="author-avatar">SC</div>
+                                <span>Sarah Chen • Dec 10, 2025</span>
+                            </div>
+                            <span>8 min read</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">🔒</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Security</span>
+                        <h3>How We're Building Enterprise-Grade Security from Day One</h3>
+                        <p>A deep dive into Draxyl's security infrastructure and our commitment to protecting your data from the very beginning...</p>
+                        <div class="blog-meta">
+                            <div class="blog-author">
+                                <div class="author-avatar">MP</div>
+                                <span>Mike Park</span>
+                            </div>
+                            <span>5 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <div class="blog-image">🏠</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Remote Work</span>
+                        <h3>Why We're Building for the Remote-First Future</h3>
+                        <p>Our vision for how Draxyl will help remote teams stay connected and engaged...</p>
+                        <div class="blog-meta">
+                            <span>Dec 5, 2025</span>
+                            <span>6 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">📊</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Productivity</span>
+                        <h3>The Science of Effective Meetings</h3>
+                        <p>Research-backed strategies we're implementing to make meetings shorter and more productive...</p>
+                        <div class="blog-meta">
+                            <span>Dec 1, 2025</span>
+                            <span>7 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">🎯</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Development</span>
+                        <h3>Features Coming in Draxyl 1.0</h3>
+                        <p>A preview of the exciting features we're building for our initial release...</p>
+                        <div class="blog-meta">
+                            <span>Nov 28, 2025</span>
+                            <span>4 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">🌍</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Company News</span>
+                        <h3>Our Vision: Draxyl for Teams Worldwide</h3>
+                        <p>How we plan to bring workplace collaboration to teams across the globe...</p>
+                        <div class="blog-meta">
+                            <span>Nov 20, 2025</span>
+                            <span>3 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">💡</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Behind the Scenes</span>
+                        <h3>Meet the Solo Developer Behind Draxyl</h3>
+                        <p>Get to know the passionate individual building Draxyl from the ground up...</p>
+                        <div class="blog-meta">
+                            <span>Nov 15, 2025</span>
+                            <span>5 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">🎨</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Design</span>
+                        <h3>Designing Draxyl's User Experience</h3>
+                        <p>How I'm crafting the perfect Draxyl experience as a solo developer...</p>
+                        <div class="blog-meta">
+                            <span>Nov 10, 2025</span>
+                            <span>8 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="load-more">
+                <button class="load-more-btn">Load More Articles</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Press Section -->
+    <section class="section section-white" id="press">
+        <div class="container">
+            <h2 class="section-title">Press & Media</h2>
+            <p class="section-subtitle">News, announcements, and media resources</p>
+
+            <!-- Press Kit -->
+            <div class="press-kit">
+                <div class="press-kit-content">
+                    <h3>📦 Press Kit</h3>
+                    <p>Download our official logos, brand guidelines, product screenshots, and executive photos for media use.</p>
+                </div>
+                <a href="#" class="press-kit-btn">
+                    ⬇️ Download Press Kit
+                </a>
+            </div>
+
+            <!-- Press Releases -->
+            <div class="press-releases">
+                <h3>Latest Press Releases</h3>
+
+                <div class="press-card">
+                    <div class="press-date">
+                        <span class="day">12</span>
+                        <span class="month">Dec 2025</span>
+                    </div>
+                    <div class="press-info">
+                        <h4>Draxyl-Presents Announces Draxyl: A Revolutionary AI-Powered Workplace Platform Coming in 2027</h4>
+                        <p>Draxyl-Presents reveals plans for Draxyl, an innovative workplace collaboration platform integrating cutting-edge AI technology, set to launch between March and August 2027.</p>
+                        <a href="#" class="press-link">Read Full Release →</a>
+                    </div>
+                </div>
+
+                <div class="press-card">
+                    <div class="press-date">
+                        <span class="day">28</span>
+                        <span class="month">Nov 2025</span>
+                    </div>
+                    <div class="press-info">
+                        <h4>Draxyl Development Scheduled to Begin August 12, 2026</h4>
+                        <p>Solo developer announces official development start date, with beta testing planned for November 25, 2026.</p>
+                        <a href="#" class="press-link">Read Full Release →</a>
+                    </div>
+                </div>
+
+                <div class="press-card">
+                    <div class="press-date">
+                        <span class="day">15</span>
+                        <span class="month">Nov 2025</span>
+                    </div>
+                    <div class="press-info">
+                        <h4>Draxyl-Presents Secures Key Partnerships Ahead of Platform Launch</h4>
+                        <p>Strategic partnerships established with technology providers to ensure scalable, reliable service for future users worldwide.</p>
+                        <a href="#" class="press-link">Read Full Release →</a>
+                    </div>
+                </div>
+
+                <div class="press-card">
+                    <div class="press-date">
+                        <span class="day">01</span>
+                        <span class="month">Nov 2025</span>
+                    </div>
+                    <div class="press-info">
+                        <h4>Solo Developer Behind Draxyl Shares Ambitious Vision</h4>
+                        <p>One developer, one dream: building an enterprise-grade collaboration platform that rivals the biggest names in the industry.</p>
+                        <a href="#" class="press-link">Read Full Release →</a>
+                    </div>
+                </div>
+
+                <div class="press-card">
+                    <div class="press-date">
+                        <span class="day">18</span>
+                        <span class="month">Oct 2025</span>
+                    </div>
+                    <div class="press-info">
+                        <h4>Draxyl-Presents Announces Mission to Democratize Workplace Collaboration</h4>
+                        <p>Company reveals vision to make enterprise-grade collaboration tools accessible to organizations of all sizes globally.</p>
+                        <a href="#" class="press-link">Read Full Release →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Coverage -->
+            <h3 style="text-align: center; font-size: 1.5rem; margin-top: 80px; color: #FFFFFF;">Featured In</h3>
+            <div class="media-logos">
+                <span class="media-logo">📰 TechCrunch</span>
+                <span class="media-logo">📺 CNBC</span>
+                <span class="media-logo">📱 The Verge</span>
+                <span class="media-logo">💼 Forbes</span>
+                <span class="media-logo">🌐 Wired</span>
+                <span class="media-logo">📊 Bloomberg</span>
+            </div>
+
+            <!-- Press Contact -->
+            <div class="press-contact">
+                <h4>Media Inquiries</h4>
+                <p>For press inquiries, interview requests, or additional information, please contact our media relations team.</p>
+                <a href="mailto:press@Draxyl-Presents.com" class="press-email">📧 press@Draxyl-Presents.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h4>💬 Draxyl</h4>
+                <p style="color: rgba(255,255,255,0.6);">Smart workspace for the modern team. Built by Draxyl-Presents.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="Draxyl-website.html#features">Features</a></li>
+                    <li><a href="Draxyl-website.html#pricing">Pricing</a></li>
+                    <li><a href="draxyl-app.html">Download</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#press">Press</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="Draxyl-legal.html#privacy">Privacy Policy</a></li>
+                    <li><a href="Draxyl-legal.html#terms">Terms of Service</a></li>
+                    <li><a href="Draxyl-legal.html#security">Security</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Draxyl by Draxyl-Presents. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <a href="#top" class="back-to-top">↑</a>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Back to top visibility
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 500) {
+                backToTop.style.opacity = '1';
+                backToTop.style.visibility = 'visible';
+            } else {
+                backToTop.style.opacity = '0';
+                backToTop.style.visibility = 'hidden';
+            }
+        });
+
+        // Job filter functionality
+        document.querySelectorAll('.job-filter').forEach(filter => {
+            filter.addEventListener('click', function() {
+                document.querySelectorAll('.job-filter').forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
