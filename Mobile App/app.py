@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 import base64
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app, resources={
     r"/*": {
         "origins": [
@@ -736,6 +736,10 @@ def reset_failed_login(email):
 
 @app.route('/')
 def home():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/api')
+def api_home():
     return jsonify({
         'message': 'Draxyl Backend Server Running',
         'security': 'Enhanced with JWT, Rate Limiting, and Input Validation',
