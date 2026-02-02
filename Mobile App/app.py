@@ -739,6 +739,10 @@ def reset_failed_login(email):
 def home():
     return send_from_directory('.', 'index.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204
+
 @app.route('/api')
 def api_home():
     return jsonify({
