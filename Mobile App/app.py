@@ -812,11 +812,15 @@ def signup():
             conn.close()
             
     except Exception as e:
-        return jsonify({'success': False, 'message': 'Server error occurred'}), 500
+        import traceback
+        print(f"SIGNUP ERROR: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
 
 @app.route('/api/login', methods=['POST', 'OPTIONS'])
 @limiter.limit("200 per hour")
 def login():
+    print("LOGIN REQUEST RECEIVED")
     if request.method == 'OPTIONS':
         return '', 200
     # Check if system is in breach lockdown
@@ -894,7 +898,7 @@ def login():
         print(f"❌ LOGIN ERROR: {str(e)}")
         import traceback
         traceback.print_exc()
-        return jsonify({'success': False, 'message': 'Server error occurred'}), 500
+        return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
 
 @app.route('/api/refresh-token', methods=['POST'])
 @token_required
