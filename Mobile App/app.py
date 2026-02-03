@@ -55,7 +55,8 @@ limiter = Limiter(
 # IP Blocking for repeated violations
 blocked_ips = set()
 
-DATABASE = 'users.db'
+# Use /tmp for database on cloud platforms (writable directory)
+DATABASE = os.path.join(os.environ.get('DATA_DIR', '/tmp'), 'users.db')
 
 # Login attempt tracking
 login_attempts = {}
